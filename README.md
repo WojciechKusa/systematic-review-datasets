@@ -2,6 +2,9 @@
 
 ____
 
+## Citation screening datasets  
+
+
 |    | Introduced in                                                                             | # reviews | Domain           | Avg. size | Avg. ratio of included (TA) | Avg. ratio of included (FT) | Additional data                 | Data URL                                                                                                     | Cochrane | Publicly available |
 |---:|:------------------------------------------------------------------------------------------|----------:|:-----------------|----------:|----------------------------:|----------------------------:|---------------------------------|--------------------------------------------------------------------------------------------------------------|----------|--------------------|
 |  1 | [Cohen et al. (2006)](https://doi.org/10.1197/jamia.M1929)                                |        15 | Drug             |     1,249 |                        7.7% |                           — | —                               | [Web](https://dmice.ohsu.edu/cohenaa/systematic-drug-class-review-data.html)                                 | —        | ✓                  |
