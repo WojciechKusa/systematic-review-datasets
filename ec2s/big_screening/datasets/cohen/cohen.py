@@ -3,11 +3,12 @@ Inout data comes from: https://dmice.ohsu.edu/cohenaa/epc-ir-data/epc-ir.clean.t
 """
 import argparse
 import copy
+import hashlib
 import os
 
 import pandas as pd
 from Bio import Entrez, Medline
-from ec2s.datasets.screening_dataset.screening_dataset import ScreeningDataset
+from ec2s.big_screening.datasets.screening_dataset.screening_dataset import ScreeningDataset
 
 # change to your email address
 Entrez.email = "Your.Name@example.org"
@@ -23,17 +24,18 @@ class CohenDataset(ScreeningDataset):
         if not os.path.exists(f"{self.output_directory}/epc-ir.clean.tsv.md5"):
             return False
         else:
-            with open(f"{self.output_directory}/epc-ir.clean.tsv.md5", "r") as f:
+            with open(
+                f"{self.output_directory}/epc-ir.clean.tsv.md5", "r", encoding="utf-8"
+            ) as f:
                 checksum = f.read().strip()
 
-            import hashlib
-            md5sum = hashlib.md5(open(f"{self.output_directory}/epc-ir.clean.tsv", "rb").read()).hexdigest()
+            with open(f"{self.output_directory}/epc-ir.clean.tsv", "rb") as f:
+                md5sum = hashlib.md5(f.read()).hexdigest()
 
             if checksum == md5sum:
                 return True
             else:
                 return False
-
 
     def prepare_dataset(self) -> None:
         prepare_dataset(self.output_directory)
@@ -43,7 +45,7 @@ def prepare_dataset(
     output_folder: str,
 ) -> None:
     labels_column: str = "Label"
-    pubmed_id_column: str = 'PubMed ID'
+    pubmed_id_column: str = "PubMed ID"
 
     df = pd.read_csv(
         DATA_URL,
