@@ -159,11 +159,11 @@ def main(args):
     original_file = os.path.join(args.out_folder, "original.trec")
     original_set = set()
 
-    f_original = open(original_file, "r+")
-    for line in f_original.readlines():
-        qid = line.split(" ", 1)[0]
-        if qid not in f_original:
-            original_set.add(qid)
+    with open(original_file, "r+", encoding="utf-8") as f_original:
+        for line in f_original.readlines():
+            qid = line.split(" ", 1)[0]
+            if qid not in f_original:
+                original_set.add(qid)
 
     print(len(original_set))
 

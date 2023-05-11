@@ -103,8 +103,7 @@ def parse_cochrane_review_reference_section(
 def get_exclusion_reasons(exclusion_section, df: pd.DataFrame) -> pd.DataFrame:
     df["exclusion_reason"] = ""
     logging.debug(
-        "Found %d documents with exclusion reasons"
-        % len(list(exclusion_section.find_all("tr")))
+        f"Found {len(list(exclusion_section.find_all('tr')))} documents with exclusion reasons"
     )
     for _excluded_paper in exclusion_section.find("tbody").find_all("tr"):
         study_id = (

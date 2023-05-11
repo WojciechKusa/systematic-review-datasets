@@ -17,6 +17,7 @@ try:
 except FileNotFoundError:
     api_key = ""
 
+
 def get_paper_id_by_doi(doi):
     url = f"{API_ENDPOINT}DOI:{doi}?fields=url,title,externalIds,citationCount"
     r = requests.get(url, headers={"x-api-key": api_key})
@@ -140,12 +141,12 @@ def match_web_to_revman_studies(
     web_references_column = "header"
     revman_column = "STUDY_NAME"
 
-    web_references_df[web_references_column] = web_references_df[web_references_column].str.replace(
-        r"\[.*\]", "", regex=True
-    )
-    web_references_df[web_references_column] = web_references_df[web_references_column].str.replace(
-        r"\{.*\}", "", regex=True
-    )
+    web_references_df[web_references_column] = web_references_df[
+        web_references_column
+    ].str.replace(r"\[.*\]", "", regex=True)
+    web_references_df[web_references_column] = web_references_df[
+        web_references_column
+    ].str.replace(r"\{.*\}", "", regex=True)
     web_references_df = normalise_column(web_references_df, web_references_column)
 
     revman_df = normalise_column(revman_df, revman_column)
