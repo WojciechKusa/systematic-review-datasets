@@ -7,7 +7,7 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
-from effect_evaluation.data.cochrane_web_parser import (
+from ec2s.ec2s.cochrane_web_parser import (
     parse_cochrane_references,
     parse_data_and_analyses_section,
 )
@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # get the cookie from your browser and paste it into this file
-with open("../../data/raw/cookie.txt", "r", encoding="utf-8") as f:
+with open("../data/cookie.txt", "r", encoding="utf-8") as f:
     cookie = f.read()
 
 HEADERS = {
