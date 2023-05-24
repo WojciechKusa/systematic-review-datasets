@@ -1,0 +1,608 @@
+{
+  "data": [
+    {
+      "Author": "Adams et al.",
+      "Year": "2014",
+      "Title": "Lipid-lowering efficacy of rosuvastatin",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Pharmacological",
+      "n_included": "108",
+      "n_references": "216",
+      "cochrane_id": "CD010254"
+    },
+    {
+      "Author": "Akl et al.",
+      "Year": "2014",
+      "Title": "Oral anticoagulation in patients with cancer who have no therapeutic or prophylactic indication for anticoagulation",
+      "Topic of interest": "Chronic Respiratory Conditions",
+      "Type of intervention": "Pharmacological",
+      "n_included": "7",
+      "n_references": "9",
+      "cochrane_id": "CD006466"
+    },
+    {
+      "Author": "Akl et al.",
+      "Year": "2014",
+      "Title": "Anticoagulation for the long-term treatment of venous thromboembolism in patients with cancer",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Pharmacological",
+      "n_included": "10",
+      "n_references": "11",
+      "cochrane_id": "CD006650"
+    },
+    {
+      "Author": "Akl et al.",
+      "Year": "2014",
+      "Title": "Parenteral anticoagulation in ambulatory patients with cancer",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Pharmacological",
+      "n_included": "15",
+      "n_references": "32",
+      "cochrane_id": "CD006652"
+    },
+    {
+      "Author": "Alkhawaja et al.",
+      "Year": "2015",
+      "Title": "Post-pyloric versus gastric tube feeding for preventing pneumonia and improving nutritional outcomes in critically ill adults",
+      "Topic of interest": "Chronic Respiratory Conditions",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "15",
+      "n_references": "15",
+      "cochrane_id": "CD008875"
+    },
+    {
+      "Author": "Anderson et al.",
+      "Year": "2016",
+      "Title": "Exercise-based cardiac rehabilitation for coronary heart disease",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "64",
+      "n_references": "102",
+      "cochrane_id": "CD001800"
+    },
+    {
+      "Author": "Andriolo et al.",
+      "Year": "2015",
+      "Title": "Early versus late tracheostomy for critically ill patients",
+      "Topic of interest": "Chronic Respiratory Conditions",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "8",
+      "n_references": "11",
+      "cochrane_id": "CD007271"
+    },
+    {
+      "Author": "Barlow et al.",
+      "Year": "2015",
+      "Title": "Parent-infant psychotherapy for improving parental and infant mental health",
+      "Topic of interest": "Mental Health",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "8",
+      "n_references": "19",
+      "cochrane_id": "CD010534"
+    },
+    {
+      "Author": "Birks et al.",
+      "Year": "2015",
+      "Title": "Rivastigmine for Alzheimer's disease",
+      "Topic of interest": "Mental Health",
+      "Type of intervention": "Pharmacological",
+      "n_included": "13",
+      "n_references": "63",
+      "cochrane_id": "CD001191"
+    },
+    {
+      "Author": "Blessberger et al.",
+      "Year": "2014",
+      "Title": "Perioperative beta-blockers for preventing surgery-related mortality and morbidity",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Pharmacological",
+      "n_included": "89",
+      "n_references": "89",
+      "cochrane_id": "CD004476"
+    },
+    {
+      "Author": "Boardman et al.",
+      "Year": "2015",
+      "Title": "Hormone therapy for preventing cardiovascular disease in post-menopausal women",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Pharmacological",
+      "n_included": "19",
+      "n_references": "68",
+      "cochrane_id": "CD002229"
+    },
+    {
+      "Author": "Bradt et al.",
+      "Year": "2013",
+      "Title": "Music for stress and anxiety reduction in coronary heart disease patients",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "26",
+      "n_references": "32",
+      "cochrane_id": "CD006577"
+    },
+    {
+      "Author": "Buchbinder et al.",
+      "Year": "2015",
+      "Title": "Percutaneous vertebroplasty for osteoporotic vertebral compression fracture",
+      "Topic of interest": "Osteoarthritis",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "12",
+      "n_references": "28",
+      "cochrane_id": "CD006349"
+    },
+    {
+      "Author": "Chen et al.",
+      "Year": "2014",
+      "Title": "Sulfasalazine for ankylosing spondylitis",
+      "Topic of interest": "Osteoarthritis",
+      "Type of intervention": "Pharmacological",
+      "n_included": "11",
+      "n_references": "17",
+      "cochrane_id": "CD004800"
+    },
+    {
+      "Author": "Claro et al.",
+      "Year": "2015",
+      "Title": "Amiodarone versus other pharmacological interventions for prevention of sudden cardiac death",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Pharmacological",
+      "n_included": "24",
+      "n_references": "40",
+      "cochrane_id": "CD008093"
+    },
+    {
+      "Author": "Cormick et al.",
+      "Year": "2015",
+      "Title": "Calcium supplementation for prevention of primary hypertension",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "16",
+      "n_references": "19",
+      "cochrane_id": "CD010037"
+    },
+    {
+      "Author": "Dowman et al.",
+      "Year": "2014",
+      "Title": "Pulmonary rehabilitation for interstitial lung disease",
+      "Topic of interest": "Chronic Respiratory Conditions",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "9",
+      "n_references": "20",
+      "cochrane_id": "CD006322"
+    },
+    {
+      "Author": "Fransen et al.",
+      "Year": "2015",
+      "Title": "Exercise for osteoarthritis of the knee",
+      "Topic of interest": "Osteoarthritis",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "54",
+      "n_references": "54",
+      "cochrane_id": "CD004376"
+    },
+    {
+      "Author": "Fransen et al.",
+      "Year": "2014",
+      "Title": "Exercise for osteoarthritis of the hip",
+      "Topic of interest": "Osteoarthritis",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "10",
+      "n_references": "10",
+      "cochrane_id": "CD007912"
+    },
+    {
+      "Author": "Galvin et al.",
+      "Year": "2015",
+      "Title": "Cooling for cerebral protection during brain surgery",
+      "Topic of interest": "Cerebrovascular Disease",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "4",
+      "n_references": "4",
+      "cochrane_id": "CD006638"
+    },
+    {
+      "Author": "Gartlehner et al.",
+      "Year": "2015",
+      "Title": "Second-generation antidepressants for preventing seasonal affective disorder in adults",
+      "Topic of interest": "Mental Health",
+      "Type of intervention": "Pharmacological",
+      "n_included": "3",
+      "n_references": "6",
+      "cochrane_id": "CD011268"
+    },
+    {
+      "Author": "Geretsegger et al.",
+      "Year": "2014",
+      "Title": "Music therapy for people with autism spectrum disorder",
+      "Topic of interest": "Mental Health",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "10",
+      "n_references": "13",
+      "cochrane_id": "CD004381"
+    },
+    {
+      "Author": "Hemkens et al.",
+      "Year": "2016",
+      "Title": "Colchicine for prevention of cardiovascular events",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Pharmacological",
+      "n_included": "39",
+      "n_references": "42",
+      "cochrane_id": "CD011047"
+    },
+    {
+      "Author": "Hooper et al.",
+      "Year": "2015",
+      "Title": "Reduction in saturated fat intake for cardiovascular disease",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "16",
+      "n_references": "99",
+      "cochrane_id": "CD011737"
+    },
+    {
+      "Author": "Hooper et al.",
+      "Year": "2015",
+      "Title": "Effects of total fat intake on body weight",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "124",
+      "n_references": "124",
+      "cochrane_id": "CD011834"
+    },
+    {
+      "Author": "Inglis et al.",
+      "Year": "2015",
+      "Title": "Structured telephone support or non-invasive telemonitoring for patients with heart failure",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "41",
+      "n_references": "110",
+      "cochrane_id": "CD007228"
+    },
+    {
+      "Author": "Jassim et al.",
+      "Year": "2015",
+      "Title": "Psychological interventions for women with non-metastatic breast cancer",
+      "Topic of interest": "Mental Health",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "28",
+      "n_references": "36",
+      "cochrane_id": "CD008729"
+    },
+    {
+      "Author": "Katsura et al.",
+      "Year": "2015",
+      "Title": "Preoperative inspiratory muscle training for postoperative pulmonary complications in adults undergoing cardiac and major abdominal surgery",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "12",
+      "n_references": "15",
+      "cochrane_id": "CD010356"
+    },
+    {
+      "Author": "Kristjansson et al.",
+      "Year": "2015",
+      "Title": "Food supplementation for improving the physical and psychosocial health of socio-economically disadvantaged children aged three months to five years",
+      "Topic of interest": "Mental Health",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "32",
+      "n_references": "47",
+      "cochrane_id": "CD009924"
+    },
+    {
+      "Author": "Kroon et al.",
+      "Year": "2014",
+      "Title": "Self-management education programmes for osteoarthritis",
+      "Topic of interest": "Osteoarthritis",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "48",
+      "n_references": "48",
+      "cochrane_id": "CD008963"
+    },
+    {
+      "Author": "Kroon et al.",
+      "Year": "2015",
+      "Title": "Non-steroidal anti-inflammatory drugs (NSAIDs) for axial spondyloarthritis (ankylosing spondylitis and non-radiographic axial spondyloarthritis)",
+      "Topic of interest": "Osteoarthritis",
+      "Type of intervention": "Pharmacological",
+      "n_included": "39",
+      "n_references": "46",
+      "cochrane_id": "CD010952"
+    },
+    {
+      "Author": "Li et al.",
+      "Year": "2014",
+      "Title": "Angiotensin converting enzyme (ACE) inhibitors versus angiotensin receptor blockers for primary hypertension",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Pharmacological",
+      "n_included": "10",
+      "n_references": "10",
+      "cochrane_id": "CD009096"
+    },
+    {
+      "Author": "Li et al.",
+      "Year": "2015",
+      "Title": "Closure versus medical therapy for preventing recurrent stroke in patients with patent foramen ovale and a history of cryptogenic stroke or transient ischemic attack",
+      "Topic of interest": "Cerebrovascular Disease",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "3",
+      "n_references": "3",
+      "cochrane_id": "CD009938"
+    },
+    {
+      "Author": "Liu et al.",
+      "Year": "2015",
+      "Title": "Peroxisome proliferator-activated receptor gamma agonists for preventing recurrent stroke and other vascular events in patients with stroke or transient ischaemic attack",
+      "Topic of interest": "Cerebrovascular Disease",
+      "Type of intervention": "Pharmacological",
+      "n_included": "4",
+      "n_references": "12",
+      "cochrane_id": "CD010693"
+    },
+    {
+      "Author": "Manser et al.",
+      "Year": "2013",
+      "Title": "Screening for lung cancer",
+      "Topic of interest": "Chronic Respiratory Conditions",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "9",
+      "n_references": "50",
+      "cochrane_id": "CD001991"
+    },
+    {
+      "Author": "Martí-Carvajal et al.",
+      "Year": "2015",
+      "Title": "Homocysteine-lowering interventions for preventing cardiovascular events",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "12",
+      "n_references": "46",
+      "cochrane_id": "CD006612"
+    },
+    {
+      "Author": "Martí-Carvajal et al.",
+      "Year": "2015",
+      "Title": "Prophylactic lidocaine for myocardial infarction",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Pharmacological",
+      "n_included": "37",
+      "n_references": "45",
+      "cochrane_id": "CD008553"
+    },
+    {
+      "Author": "McCaul et al.",
+      "Year": "2014",
+      "Title": "Pre-hospital versus in-hospital thrombolysis for ST-elevation myocardial infarction",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Pharmacological",
+      "n_included": "3",
+      "n_references": "7",
+      "cochrane_id": "CD010191"
+    },
+    {
+      "Author": "McGuinness et al.",
+      "Year": "2016",
+      "Title": "Statins for the prevention of dementia",
+      "Topic of interest": "Mental Health",
+      "Type of intervention": "Pharmacological",
+      "n_included": "2",
+      "n_references": "5",
+      "cochrane_id": "CD003160"
+    },
+    {
+      "Author": "McGuinness et al.",
+      "Year": "2014",
+      "Title": "Statins for the treatment of dementia",
+      "Topic of interest": "Mental Health",
+      "Type of intervention": "Pharmacological",
+      "n_included": "4",
+      "n_references": "8",
+      "cochrane_id": "CD007514"
+    },
+    {
+      "Author": "McNamara et al.",
+      "Year": "2015",
+      "Title": "Implantable defibrillators versus medical therapy for cardiac channelopathies",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "1",
+      "n_references": "1",
+      "cochrane_id": "CD011168"
+    },
+    {
+      "Author": "Menadue et al.",
+      "Year": "2014",
+      "Title": "Non-invasive ventilation during exercise training for people with chronic obstructive pulmonary disease",
+      "Topic of interest": "Chronic Respiratory Conditions",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "6",
+      "n_references": "9",
+      "cochrane_id": "CD007714"
+    },
+    {
+      "Author": "Minozzi et al.",
+      "Year": "2015",
+      "Title": "Dopamine agonists for the treatment of cocaine dependence",
+      "Topic of interest": "Mental Health",
+      "Type of intervention": "Pharmacological",
+      "n_included": "24",
+      "n_references": "33",
+      "cochrane_id": "CD003352"
+    },
+    {
+      "Author": "Musini et al.",
+      "Year": "2014",
+      "Title": "Blood pressure-lowering efficacy of monotherapy with thiazide diuretics for primary hypertension",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Pharmacological",
+      "n_included": "60",
+      "n_references": "77",
+      "cochrane_id": "CD003824"
+    },
+    {
+      "Author": "Perry et al.",
+      "Year": "2015",
+      "Title": "Interventions for drug-using offenders with co-occurring mental illness",
+      "Topic of interest": "Mental Health",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "8",
+      "n_references": "14",
+      "cochrane_id": "CD010901"
+    },
+    {
+      "Author": "Peytremann-Bridevaux et al.",
+      "Year": "2015",
+      "Title": "Chronic disease management programmes for adults with asthma",
+      "Topic of interest": "Chronic Respiratory Conditions",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "20",
+      "n_references": "27",
+      "cochrane_id": "CD007988"
+    },
+    {
+      "Author": "Santos et al.",
+      "Year": "2015",
+      "Title": "Chemotherapy for advanced non-small cell lung cancer in the elderly population",
+      "Topic of interest": "Chronic Respiratory Conditions",
+      "Type of intervention": "Pharmacological",
+      "n_included": "51",
+      "n_references": "58",
+      "cochrane_id": "CD010463"
+    },
+    {
+      "Author": "Shea et al.",
+      "Year": "2013",
+      "Title": "Folic acid and folinic acid for reducing side effects in patients receiving methotrexate for rheumatoid arthritis",
+      "Topic of interest": "Osteoarthritis",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "6",
+      "n_references": "6",
+      "cochrane_id": "CD000951"
+    },
+    {
+      "Author": "Siddiqi et al.",
+      "Year": "2016",
+      "Title": "Interventions for preventing delirium in hospitalised non-ICU patients",
+      "Topic of interest": "Mental Health",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "39",
+      "n_references": "46",
+      "cochrane_id": "CD005563"
+    },
+    {
+      "Author": "Siebenhofer et al.",
+      "Year": "2016",
+      "Title": "Long-term effects of weight-reducing drugs in people with hypertension",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Pharmacological",
+      "n_included": "9",
+      "n_references": "30",
+      "cochrane_id": "CD007654"
+    },
+    {
+      "Author": "Sivera et al.",
+      "Year": "2014",
+      "Title": "Interleukin-1 inhibitors for acute gout",
+      "Topic of interest": "Osteoarthritis",
+      "Type of intervention": "Pharmacological",
+      "n_included": "4",
+      "n_references": "8",
+      "cochrane_id": "CD009993"
+    },
+    {
+      "Author": "Teo et al.",
+      "Year": "2014",
+      "Title": "Haemophilus influenzae oral vaccination for preventing acute exacerbations of chronic bronchitis and chronic obstructive pulmonary disease",
+      "Topic of interest": "Chronic Respiratory Conditions",
+      "Type of intervention": "Pharmacological",
+      "n_included": "6",
+      "n_references": "9",
+      "cochrane_id": "CD010010"
+    },
+    {
+      "Author": "Torres et al.",
+      "Year": "2015",
+      "Title": "Non-invasive positive pressure ventilation for prevention of complications after pulmonary resection in lung cancer patients",
+      "Topic of interest": "Chronic Respiratory Conditions",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "7",
+      "n_references": "8",
+      "cochrane_id": "CD010355"
+    },
+    {
+      "Author": "Vale et al.",
+      "Year": "2014",
+      "Title": "Statins for acute coronary syndrome",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Pharmacological",
+      "n_included": "19",
+      "n_references": "24",
+      "cochrane_id": "CD006870"
+    },
+    {
+      "Author": "Visvanathan et al.",
+      "Year": "2015",
+      "Title": "Parenteral fluid regimens for improving functional outcome in people with acute stroke",
+      "Topic of interest": "Cerebrovascular Disease",
+      "Type of intervention": "Non-pharmacological",
+      "n_included": "12",
+      "n_references": "12",
+      "cochrane_id": "CD011138"
+    },
+    {
+      "Author": "Wang et al.",
+      "Year": "2015",
+      "Title": "Fibrates for secondary prevention of cardiovascular disease and stroke",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Pharmacological",
+      "n_included": "13",
+      "n_references": "24",
+      "cochrane_id": "CD009580"
+    },
+    {
+      "Author": "Wong et al.",
+      "Year": "2014",
+      "Title": "Blood pressure lowering efficacy of nonselective beta-blockers for primary hypertension",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Pharmacological",
+      "n_included": "25",
+      "n_references": "26",
+      "cochrane_id": "CD007452"
+    },
+    {
+      "Author": "Wong et al.",
+      "Year": "2015",
+      "Title": "Blood pressure lowering efficacy of dual alpha and beta blockers for primary hypertension",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Pharmacological",
+      "n_included": "8",
+      "n_references": "8",
+      "cochrane_id": "CD007449"
+    },
+    {
+      "Author": "Wong et al.",
+      "Year": "2014",
+      "Title": "Blood pressure lowering efficacy of partial agonist beta blocker monotherapy for primary hypertension",
+      "Topic of interest": "Cardiovascular Disease",
+      "Type of intervention": "Pharmacological",
+      "n_included": "13",
+      "n_references": "13",
+      "cochrane_id": "CD007450"
+    },
+    {
+      "Author": "Ziganshina et al.",
+      "Year": "2015",
+      "Title": "Cerebrolysin for acute ischaemic stroke",
+      "Topic of interest": "Cerebrovascular Disease",
+      "Type of intervention": "Pharmacological",
+      "n_included": "6",
+      "n_references": "16",
+      "cochrane_id": "CD007026"
+    }
+  ]
+}
+
+
+
+
