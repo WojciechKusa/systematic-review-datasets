@@ -70,10 +70,14 @@ def _get_most_recent_available_version(
     for version, version_name in reversed(review_versions.items()):
         cochrane_home = f"https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.{review_id}.pub{version}"
         cochrane_revman = f"{cochrane_home}/media/CDSR/{review_id}/table_n/{review_id}StatsDataOnly.rm5"
-        r = requests.get(cochrane_revman, headers=HEADERS)
-        if r.status_code == 200 and not r.content.decode().startswith(
-            "<!DOCTYPE html>"
-        ):
+        try:
+            r = requests.get(cochrane_revman, headers=HEADERS)
+            if r.status_code == 200 and not r.content.decode().startswith(
+                "<!DOCTYPE html>"
+            ):
+                return version
+        except requests.exceptions.TooManyRedirects:
+            logger.warning(f"Too many redirects for {cochrane_revman}")
             return version
 
 
@@ -100,6 +104,9 @@ def prepare_dataset(review_id: str, output_data_path: str) -> dict[str, Any]:
     """
     versions = _get_versions(review_id=review_id)
 
+    if len(versions) == 0:
+        logger.warning(f"Review {review_id} has no versions")
+        return {}
     if list(versions.keys())[-1] != 1:
         logger.debug(
             f"Review {review_id} has more than one version. Checking latest available version"
@@ -114,6 +121,7 @@ def prepare_dataset(review_id: str, output_data_path: str) -> dict[str, Any]:
         cochrane_home = f"https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.{review_id}.pub{version}"
         cochrane_pdf = f"{cochrane_home}/pdf/CDSR/{review_id}/{review_id}.pdf"
     else:
+        version = 1
         logger.debug(f"Review {review_id} has only one version")
         cochrane_home = (
             f"https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.{review_id}"
@@ -157,15 +165,20 @@ def prepare_dataset(review_id: str, output_data_path: str) -> dict[str, Any]:
 
     if not data_df.empty:
         n_comparisons = len(data_df["comparison_name"].unique())
-        n_outcomes = len(data_df["outcome_name"].unique())
-        n_outcomes_and_subgroups = len(data_df)
-        avg_studies_for_outcome = (
-            data_df[
-                pd.to_numeric(data_df["No. of studies"], errors="coerce").notnull()
-            ]["No. of studies"]
-            .astype(int)
-            .mean()
-        )
+        try:
+            n_outcomes = len(data_df["outcome_name"].unique())
+            n_outcomes_and_subgroups = len(data_df)
+            avg_studies_for_outcome = (
+                data_df[
+                    pd.to_numeric(data_df["No. of studies"], errors="coerce").notnull()
+                ]["No. of studies"]
+                .astype(int)
+                .mean()
+            )
+        except KeyError:  # fixme: check other option for DTA reviews
+            n_outcomes = 0
+            n_outcomes_and_subgroups = 0
+            avg_studies_for_outcome = 0
     else:
         n_comparisons = 0
         n_outcomes = 0
