@@ -129,11 +129,16 @@ def get_reference_page(url: str, headers: dict[str, str]) -> Optional[BeautifulS
 
 
 def safe_convert_to_float(number):
+    if not number:
+        return None
     try:
         return float(number)
     except ValueError:
         number = number.replace("‐", "-").strip("'")
-        return float(number)
+        try:
+            return float(number)
+        except ValueError:
+            return None
 
 
 def get_effect_size(
@@ -144,8 +149,16 @@ def get_effect_size(
     if len(text.split("[")) == 1:
         return None, None, None
     effect_size = text.split("[")[0].strip()
-    lower_ci = text.split("[")[1].split(",")[0].strip()
-    upper_ci = text.split("[")[1].split(",")[1].split("]")[0].strip()
+    try:
+        lower_ci = text.split("[")[1].split(",")[0].strip()
+    except IndexError:
+        lower_ci = None
+
+    try:
+        upper_ci = text.split("[")[1].split(",")[1].split("]")[0].strip()
+    except IndexError:
+        upper_ci = None
+
     return (
         safe_convert_to_float(effect_size),
         safe_convert_to_float(lower_ci),
@@ -210,14 +223,19 @@ def parse_data_and_analyses_section(url: str, headers: dict[str, str]) -> pd.Dat
         df["comparison_name"] = comparison_name
         df["comparison_id"] = comparison_id + 1
 
+        has_effect_size = True
         with contextlib.suppress(AttributeError):
+            if "Effect size" not in df.columns:
+                has_effect_size = False
+                continue
             effects = df["Effect size"].apply(get_effect_size).apply(pd.Series)
             df["effect_size"] = effects[0]
             df["lower_ci"] = effects[1]
             df["upper_ci"] = effects[2]
 
-        df = df[~df[df.columns[0]].str.startswith("Open in figure viewer")]
-        df = postprocess_comparison_table(df)
+        if has_effect_size:
+            df = df[~df[df.columns[0]].str.startswith("Open in figure viewer")]
+            df = postprocess_comparison_table(df)
         out_df = pd.concat([out_df, df])
 
     return out_df.reset_index(drop=True)
@@ -245,7 +263,7 @@ def parse_cochrane_references(url: str, headers: dict[str, str]) -> pd.DataFrame
             reference_category=reference_category,
         )
 
-        if reference_category == "excluded":
+        if reference_category == "excluded" and soup.find("section", {"class": "characteristicsOfExcludedStudies"}):
             df = get_exclusion_reasons(
                 soup.find("section", {"class": "characteristicsOfExcludedStudies"}),
                 df,
