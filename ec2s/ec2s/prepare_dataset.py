@@ -14,7 +14,6 @@ from ec2s.ec2s.cochrane_web_parser import (
     parse_search_strategy,
     parse_eligibility_criteria,
 )
-from ec2s.ec2s.match_references import expand_references_details
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -178,7 +177,7 @@ def prepare_dataset(review_id: str, output_data_path: str) -> dict[str, Any]:
     search_strategy = parse_search_strategy(url=cochrane_appendix, headers=HEADERS)
 
     df = parse_cochrane_references(url=cochrane_references, headers=HEADERS)
-    df = expand_references_details(df)
+    # df = expand_references_details(df)
     df.to_csv(f"{out_path}/references.csv", index=False)
 
     n_studies_included = len(
