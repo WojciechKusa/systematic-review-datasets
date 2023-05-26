@@ -263,7 +263,9 @@ def parse_cochrane_references(url: str, headers: dict[str, str]) -> pd.DataFrame
             reference_category=reference_category,
         )
 
-        if reference_category == "excluded" and soup.find("section", {"class": "characteristicsOfExcludedStudies"}):
+        if reference_category == "excluded" and soup.find(
+            "section", {"class": "characteristicsOfExcludedStudies"}
+        ):
             df = get_exclusion_reasons(
                 soup.find("section", {"class": "characteristicsOfExcludedStudies"}),
                 df,
@@ -272,3 +274,52 @@ def parse_cochrane_references(url: str, headers: dict[str, str]) -> pd.DataFrame
         out_df = pd.concat([out_df, df])
 
     return out_df.reset_index(drop=True)
+
+
+def parse_search_strategy(url: str, headers: dict[str, str]) -> dict[str, str]:
+    """Parse appendix page containing search queries used in the systematic review.
+    It returns the search query from the EMBASE databse."""
+    r = requests.get(url, headers=headers)
+    soup = BeautifulSoup(r.text, "html.parser")
+    appendices = soup.find("section", {"class": "appendices"})
+
+    if not appendices:
+        return {}
+    appendices_dict = {}
+    for section in appendices.find_all("section"):
+        # find the highest level heading and use it as key
+        key = section.find(re.compile("^h[1-6]$")).text.strip()
+        value = section.text.replace(key, "").strip()
+        appendices_dict[key] = value
+
+    return appendices_dict
+
+
+def parse_eligibility_criteria(url: str, headers: dict[str, str]) -> dict[str, str]:
+    """Parse methods section containing eligibility criteria used in the systematic review."""
+    r = requests.get(url, headers=headers)
+    soup = BeautifulSoup(r.text, "html.parser")
+    methods = soup.find("section", {"class": "methods"})
+    criteria = methods.find(
+        "h3",
+        text=re.compile(
+            "Criteria for considering studies for this review", re.IGNORECASE
+        ),
+    ).parent
+
+    criteria_dict = {}
+    for section in criteria.find_all("section"):
+        criteria_text = ""
+        category = section.find("h4")
+        if category:
+            category = category.text.strip()
+            criteria_text = section.find_all("p")
+            criteria_text = " ".join([p.text.strip() for p in criteria_text])
+        else:
+            category = section.find("h5")
+            if category:
+                category = category.text.strip()
+                criteria_text = section.text.replace(category, "").strip()
+        criteria_dict[category] = criteria_text
+
+    return criteria_dict
