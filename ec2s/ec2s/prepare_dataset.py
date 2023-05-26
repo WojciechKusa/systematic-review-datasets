@@ -1,4 +1,5 @@
 import hashlib
+import json
 import logging
 import os
 from typing import Any
@@ -10,8 +11,9 @@ from bs4 import BeautifulSoup
 from ec2s.ec2s.cochrane_web_parser import (
     parse_cochrane_references,
     parse_data_and_analyses_section,
+    parse_search_strategy,
+    parse_eligibility_criteria,
 )
-from ec2s.ec2s.match_references import expand_references_details
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -48,7 +50,11 @@ def _get_file(url: str, headers: dict[str, str], output_file: str) -> str:
     :param output_file:
     :return: hash of the file, or empty string if the file could not be downloaded
     """
-    r = requests.get(url, headers=headers)
+    try:
+        r = requests.get(url, headers=headers)
+    except requests.exceptions.TooManyRedirects:
+        logger.error(f"Too many redirects for {url}")
+        return ""
     if r.status_code == 200:
         with open(output_file, "wb") as f:
             f.write(r.content)
@@ -60,7 +66,7 @@ def _get_file(url: str, headers: dict[str, str], output_file: str) -> str:
 
 
 def _get_most_recent_available_version(
-    review_id: str, review_versions: dict[int, str]
+        review_id: str, review_versions: dict[int, str]
 ) -> int:
     """
     Check which review version is the most recent one available on Cochrane Library.
@@ -74,7 +80,7 @@ def _get_most_recent_available_version(
         try:
             r = requests.get(cochrane_revman, headers=HEADERS)
             if r.status_code == 200 and not r.content.decode().startswith(
-                "<!DOCTYPE html>"
+                    "<!DOCTYPE html>"
             ):
                 return version
         except requests.exceptions.TooManyRedirects:
@@ -86,6 +92,17 @@ def _get_review_title(review_url: str) -> str:
     r = requests.get(review_url, headers=HEADERS)
     soup = BeautifulSoup(r.text, "html.parser")
     return soup.find("h1", {"class": "publication-title"}).text.strip()
+
+
+def _get_review_abstract(review_url: str) -> str:
+    """Returns the abstract of the review from Cochrane Library as a raw text."""
+    r = requests.get(review_url, headers=HEADERS)
+    soup = BeautifulSoup(r.text, "html.parser")
+    return (
+        soup.find("section", {"class": "abstract"})
+        .find("div", {"class": "full_abstract"})
+        .text.strip()
+    )
 
 
 def get_review_doi(review_id: str, review_version: int) -> str:
@@ -113,6 +130,10 @@ def prepare_dataset(review_id: str, output_data_path: str) -> dict[str, Any]:
             f"Review {review_id} has more than one version. Checking latest available version"
         )
         version = _get_most_recent_available_version(review_id, versions)
+        if not version:
+            logger.warning(f"Review {review_id} has no available versions")
+            return {}
+
         logger.debug(
             f"Most recent available version is {version} out of {list(versions.keys())[-1]}"
         )
@@ -135,6 +156,7 @@ def prepare_dataset(review_id: str, output_data_path: str) -> dict[str, Any]:
         f"{cochrane_home}/media/CDSR/{review_id}/table_n/{review_id}StatsDataOnly.rm5"
     )
     cochrane_references = f"{cochrane_home}/references"
+    cochrane_appendix = f"{cochrane_home}/appendices"
 
     out_path = f"{output_data_path}/{review_id}/"
     if not os.path.exists(out_path):
@@ -148,10 +170,14 @@ def prepare_dataset(review_id: str, output_data_path: str) -> dict[str, Any]:
     )
 
     title = _get_review_title(review_url=cochrane_home)
+    abstract = _get_review_abstract(review_url=cochrane_home)
     doi = get_review_doi(review_id=review_id, review_version=version)
 
+    criteria = parse_eligibility_criteria(url=cochrane_home, headers=HEADERS)
+    search_strategy = parse_search_strategy(url=cochrane_appendix, headers=HEADERS)
+
     df = parse_cochrane_references(url=cochrane_references, headers=HEADERS)
-    df = expand_references_details(df)
+    # df = expand_references_details(df)
     df.to_csv(f"{out_path}/references.csv", index=False)
 
     n_studies_included = len(
@@ -186,6 +212,17 @@ def prepare_dataset(review_id: str, output_data_path: str) -> dict[str, Any]:
         n_outcomes = 0
         n_outcomes_and_subgroups = 0
         avg_studies_for_outcome = 0
+
+    review_details = {
+        "title": title,
+        "abstract": abstract,
+        "doi": doi,
+        "review_id": review_id,
+        "criteria": criteria,
+        "search_strategy": search_strategy,
+    }
+    with open(f"{out_path}/review_details.json", "w") as f:
+        json.dump(review_details, f, indent=4)
 
     return {
         "title": title,
