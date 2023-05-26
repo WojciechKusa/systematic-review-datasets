@@ -30,7 +30,7 @@ def convert_xml_to_json(xml_file_path):
 
 
 def get_main_text(xml_tei_path) -> Tuple[str, str, str]:
-    with open(xml_tei_path) as f:
+    with open(xml_tei_path, encoding='utf-8') as f:
         paper = grobid_tei_xml.parse_document_xml(f.read())
         paper = paper.to_dict()
 
