@@ -288,9 +288,12 @@ def parse_search_strategy(url: str, headers: dict[str, str]) -> dict[str, str]:
     appendices_dict = {}
     for section in appendices.find_all("section"):
         # find the highest level heading and use it as key
-        key = section.find(re.compile("^h[1-6]$")).text.strip()
-        value = section.text.replace(key, "").strip()
-        appendices_dict[key] = value
+        try:
+            key = section.find(re.compile("^h[1-6]$")).text.strip()
+            value = section.text.replace(key, "").strip()
+            appendices_dict[key] = value
+        except AttributeError:
+            continue
 
     return appendices_dict
 

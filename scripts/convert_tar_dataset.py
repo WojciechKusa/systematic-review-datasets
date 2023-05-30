@@ -9,10 +9,6 @@ from ec2s.ec2s.prepare_dataset import prepare_dataset
 
 if __name__ == "__main__":
     TAR_REPOSITORY_PATH = "../../tar/"
-    OUTPUT_DATA_PATH = "../data/external/tar-systematic_reviews/"
-
-    if not os.path.exists(OUTPUT_DATA_PATH):
-        os.makedirs(OUTPUT_DATA_PATH)
 
     dataset_names = ["2017-TAR", "2018-TAR", "2019-TAR"]
     review_types = ["Intervention", "Prognosis", "Qualitative", "DTA"]
@@ -23,6 +19,11 @@ if __name__ == "__main__":
     index_id = 1
 
     for dataset_name in dataset_names:
+        OUTPUT_DATA_PATH = f"../data/external/tar{dataset_name[:4]}/"
+
+        if not os.path.exists(OUTPUT_DATA_PATH):
+            os.makedirs(OUTPUT_DATA_PATH)
+
         for review_type, dataset_split in itertools.product(review_types, dataset_splits):
             if dataset_name in ["2018-TAR", "2017-TAR"] and review_type != "DTA":
                 # 2018-TAR and 2017-TAR only has DTA reviews
