@@ -300,6 +300,8 @@ def parse_eligibility_criteria(url: str, headers: dict[str, str]) -> dict[str, s
     r = requests.get(url, headers=headers)
     soup = BeautifulSoup(r.text, "html.parser")
     methods = soup.find("section", {"class": "methods"})
+    if not methods:
+        return {}
     criteria = methods.find(
         "h3",
         text=re.compile(
