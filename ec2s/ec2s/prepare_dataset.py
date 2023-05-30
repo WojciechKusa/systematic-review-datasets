@@ -204,7 +204,7 @@ def prepare_dataset(review_id: str, output_data_path: str, use_version: str = "l
     abstract = _get_review_abstract(soup=cochrane_home_soup)
     review_type = _get_review_type(soup=cochrane_home_soup)
 
-    criteria = parse_eligibility_criteria(soup=cochrane_home_soup, headers=HEADERS)
+    criteria = parse_eligibility_criteria(soup=cochrane_home_soup)
     search_strategy = parse_search_strategy(url=cochrane_appendix, headers=HEADERS)
 
     df = parse_cochrane_references(url=cochrane_references, headers=HEADERS)
