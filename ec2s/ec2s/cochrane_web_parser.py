@@ -90,12 +90,15 @@ def parse_cochrane_review_reference_section(
         header = _study.find("div", {"class": "reference-title-banner"}).text
         _study_id = _study.attrs.get("id")
         for citation in _study.find_all("div", {"class": "bibliography-section"}):
-            citation_data = get_citation_data(citation)
-            citation_data["header"] = header
-            citation_data["reference_type"] = reference_category
-            citation_data["study_id"] = _study_id
-
-            _studies.append(citation_data)
+            try:
+                citation_data = get_citation_data(citation)
+                citation_data["header"] = header
+                citation_data["reference_type"] = reference_category
+                citation_data["study_id"] = _study_id
+                _studies.append(citation_data)
+            except IndexError as e:
+                logger.error(f"Error parsing citation: {e}")
+                continue
 
     return pd.DataFrame(_studies)
 
