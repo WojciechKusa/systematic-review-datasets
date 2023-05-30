@@ -298,17 +298,18 @@ def parse_search_strategy(url: str, headers: dict[str, str]) -> dict[str, str]:
     return appendices_dict
 
 
-def parse_eligibility_criteria(url: str, headers: dict[str, str]) -> dict[str, str]:
+def parse_eligibility_criteria(
+    soup: BeautifulSoup
+) -> dict[str, str]:
     """Parse methods section containing eligibility criteria used in the systematic review."""
-    r = requests.get(url, headers=headers)
-    soup = BeautifulSoup(r.text, "html.parser")
     methods = soup.find("section", {"class": "methods"})
     if not methods:
         return {}
     criteria = methods.find(
-        "h3",
+        re.compile("^h[1-6]$"),
         text=re.compile(
-            "Criteria for considering studies for this review", re.IGNORECASE
+            "Criteria for considering (studies|reviews) for (this review|inclusion)",
+            re.IGNORECASE,
         ),
     ).parent
 
