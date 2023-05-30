@@ -29,7 +29,7 @@ if __name__ == "__main__":
     added_reviews = []
     index_id = 1
 
-    for review in sigir2017_reviews:
+    for review in tqdm(sigir2017_reviews):
         match = re.search(cochrane_id_pattern, review["url"])
         if match:
             cochrane_id = match.group(0)
