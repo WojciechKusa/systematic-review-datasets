@@ -2,7 +2,7 @@ import hashlib
 import json
 import logging
 import os
-from typing import Any
+from typing import Any, Optional
 
 import pandas as pd
 import requests
@@ -13,6 +13,7 @@ from ec2s.ec2s.cochrane_web_parser import (
     parse_data_and_analyses_section,
     parse_search_strategy,
     parse_eligibility_criteria,
+    get_safe_soup,
 )
 from ec2s.ec2s.match_references import expand_references_details
 
@@ -31,8 +32,9 @@ HEADERS = {
 
 def _get_versions(review_id: str) -> dict[int, str]:
     _url = f"https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.{review_id}/information"
-    r = requests.get(_url, headers=HEADERS)
-    soup = BeautifulSoup(r.text, "html.parser")
+    soup: Optional[BeautifulSoup] = get_safe_soup(url=_url, headers=HEADERS)
+    if not soup:
+        return {}
 
     version_history = soup.find("section", {"class": "versionHistory"})
     versions = [
@@ -67,7 +69,7 @@ def _get_file(url: str, headers: dict[str, str], output_file: str) -> str:
 
 
 def _get_most_recent_available_version(
-        review_id: str, review_versions: dict[int, str]
+    review_id: str, review_versions: dict[int, str]
 ) -> int:
     """
     Check which review version is the most recent one available on Cochrane Library.
@@ -81,12 +83,13 @@ def _get_most_recent_available_version(
         try:
             r = requests.get(cochrane_revman, headers=HEADERS)
             if r.status_code == 200 and not r.content.decode().startswith(
-                    "<!DOCTYPE html>"
+                "<!DOCTYPE html>"
             ):
                 return version
         except requests.exceptions.TooManyRedirects:
             logger.warning(f"Too many redirects for {cochrane_revman}")
             return version
+
 
 def _get_cochrane_home_soup(review_url: str) -> BeautifulSoup:
     """Get the soup of the Cochrane Library page of the review.
@@ -124,7 +127,9 @@ def get_review_doi(review_id: str, review_version: int) -> str:
         return f"https://doi.org/10.1002/14651858.{review_id}.pub{review_version}"
 
 
-def prepare_dataset(review_id: str, output_data_path: str, use_version: str = "latest") -> dict[str, Any]:
+def prepare_dataset(
+    review_id: str, output_data_path: str, use_version: str = "latest"
+) -> dict[str, Any]:
     """This script downloads the pdf and revman from Cochrane Library and saves it to output_data_path.
     It also parses the data and returns a dict with data.
 
@@ -149,7 +154,9 @@ def prepare_dataset(review_id: str, output_data_path: str, use_version: str = "l
             )
             version = _get_most_recent_available_version(review_id, versions)
             if not version:
-                logger.warning(f"Review {review_id} has no available versions with RevMan files")
+                logger.warning(
+                    f"Review {review_id} has no available versions with RevMan files"
+                )
                 return {}
 
             logger.debug(
@@ -185,8 +192,6 @@ def prepare_dataset(review_id: str, output_data_path: str, use_version: str = "l
     cochrane_revman = (
         f"{cochrane_home}/media/CDSR/{review_id}/table_n/{review_id}StatsDataOnly.rm5"
     )
-    cochrane_references = f"{cochrane_home}/references"
-    cochrane_appendix = f"{cochrane_home}/appendices"
 
     out_path = f"{output_data_path}/{review_id}/"
     if not os.path.exists(out_path):
@@ -199,16 +204,35 @@ def prepare_dataset(review_id: str, output_data_path: str, use_version: str = "l
         url=cochrane_revman, headers=HEADERS, output_file=f"{out_path}/{review_id}.rm5"
     )
 
-    cochrane_home_soup = _get_cochrane_home_soup(review_url=cochrane_home)
+    cochrane_home_soup: Optional[BeautifulSoup] = get_safe_soup(
+        url=cochrane_home, headers=HEADERS
+    )
+    if not cochrane_home_soup:
+        logger.error(
+            f"Review {review_id} has no Cochrane home page or it is not available"
+        )
+        return {}
+
     title = _get_review_title(soup=cochrane_home_soup)
     abstract = _get_review_abstract(soup=cochrane_home_soup)
     review_type = _get_review_type(soup=cochrane_home_soup)
-
     criteria = parse_eligibility_criteria(soup=cochrane_home_soup)
-    search_strategy = parse_search_strategy(url=cochrane_appendix, headers=HEADERS)
 
-    df = parse_cochrane_references(url=cochrane_references, headers=HEADERS)
-    df = expand_references_details(df)
+    cochrane_appendix = f"{cochrane_home}/appendices"
+    cochrane_appendix_soup: Optional[BeautifulSoup] = get_safe_soup(
+        url=cochrane_appendix, headers=HEADERS
+    )
+    if cochrane_appendix_soup:
+        search_strategy = parse_search_strategy(soup=cochrane_appendix_soup)
+    else:
+        search_strategy = ""
+
+    cochrane_references = f"{cochrane_home}/references"
+    cochrane_references_soup: Optional[BeautifulSoup] = get_safe_soup(
+        url=cochrane_references, headers=HEADERS
+    )
+    df = parse_cochrane_references(soup=cochrane_references_soup)
+    # df = expand_references_details(df)
     df.to_csv(f"{out_path}/references.csv", index=False)
 
     n_studies_included = len(
@@ -222,7 +246,7 @@ def prepare_dataset(review_id: str, output_data_path: str, use_version: str = "l
         df[df["reference_type"] == "excluded"]["citation"].unique()
     )
 
-    data_df = parse_data_and_analyses_section(url=cochrane_references, headers=HEADERS)
+    data_df = parse_data_and_analyses_section(soup=cochrane_references_soup)
     data_df.to_csv(f"{out_path}/data_and_analyses.csv", index=False)
 
     if not data_df.empty:
