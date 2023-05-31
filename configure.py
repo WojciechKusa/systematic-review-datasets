@@ -1,6 +1,6 @@
-import os
 import argparse
 import json
+import os
 
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config/")
 CONFIG_FILES = {
@@ -40,7 +40,7 @@ def configure(overwrite: bool, update: str) -> None:
         file_path = os.path.join(CONFIG_PATH, config_file)
         if not overwrite and os.path.exists(file_path) and update != config_key:
             print(
-                f"{config_key} already exists. Use --overwrite or --update to change. Current value: {open(file_path).read()}"
+                f"{config_key} already exists. Use --overwrite or --update to change."
             )
             continue
 
