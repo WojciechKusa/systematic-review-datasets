@@ -20,8 +20,7 @@ if __name__ == "__main__":
     if not os.path.exists(OUTPUT_DATA_PATH):
         os.makedirs(OUTPUT_DATA_PATH)
 
-    review_type = "Intervention"
-    dataset_split = "Training"
+    dataset_split = "train"
 
     with open(f"{REPOSITORY_PATH}/systematic_reviews.json", "r") as f:
         sigir2017_reviews = json.load(f)
@@ -42,8 +41,7 @@ if __name__ == "__main__":
         sigir2017_dataset["cochrane_id"] = cochrane_id
         sigir2017_dataset["dataset_id"] = review["id"]
         sigir2017_dataset["used_in"] = ["SIGIR2017"]
-        sigir2017_dataset["review_type"] = review_type
-        sigir2017_dataset["dataset_split"] = "train"
+        sigir2017_dataset["dataset_split"] = dataset_split
 
         added_reviews.append(sigir2017_dataset)
         index_id += 1
@@ -55,3 +53,5 @@ if __name__ == "__main__":
         }
         with open(f"{OUTPUT_DATA_PATH}/data_index.json", "w") as f:
             json.dump(final_data, f, indent=2)
+
+    print("Done!")

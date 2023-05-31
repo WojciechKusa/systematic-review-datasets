@@ -16,8 +16,7 @@ if __name__ == "__main__":
     with open(EC2S_REVIEWS_FILE, "r") as f:
         ec2s_reviews = json.load(f)
 
-    review_type = "Intervention"
-
+    dataset_split = "train"
     added_reviews = []
     index_id = 1
 
@@ -29,8 +28,7 @@ if __name__ == "__main__":
         )
         ec2s_dataset["id"] = index_id
         ec2s_dataset["used_in"] = ["EC2S"]
-        ec2s_dataset["review_type"] = review_type
-        ec2s_dataset["dataset_split"] = "train"
+        ec2s_dataset["dataset_split"] = dataset_split
 
         added_reviews.append(ec2s_dataset)
         index_id += 1
