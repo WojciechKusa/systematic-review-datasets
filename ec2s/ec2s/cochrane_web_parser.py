@@ -314,7 +314,7 @@ def parse_eligibility_criteria(soup: BeautifulSoup) -> dict[str, str]:
     criteria = methods.find(
         re.compile("^h[1-6]$"),
         text=re.compile(
-            "Criteria for considering (studies|reviews) for (this review|inclusion)",
+            "Criteria for considering (studies|reviews) for (this review|inclusion|this synthesis)",
             re.IGNORECASE,
         ),
     ).parent

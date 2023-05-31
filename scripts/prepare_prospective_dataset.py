@@ -13,14 +13,14 @@ if __name__ == "__main__":
     if not os.path.exists(OUTPUT_DATA_PATH):
         os.makedirs(OUTPUT_DATA_PATH)
 
-    dataset_split = "Testing"
+    dataset_split = "test"
 
     with open(REVIEWS_FILE, "r") as f:
         prospective_reviews = json.load(f)
 
     added_reviews = []
 
-    for index_id, review in tqdm(enumerate(prospective_reviews["data"])):
+    for index_id, review in tqdm(enumerate(prospective_reviews["data"]), total=len(prospective_reviews["data"])):
         review_id = review["cochrane_id"]
 
         pcs_dataset = prepare_dataset(
@@ -40,3 +40,5 @@ if __name__ == "__main__":
         }
         with open(f"{OUTPUT_DATA_PATH}/data_index.json", "w") as f:
             json.dump(final_data, f, indent=2)
+
+    print("Done!")
