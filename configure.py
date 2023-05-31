@@ -49,7 +49,7 @@ def configure(overwrite: bool, update: str) -> None:
         else:
             value = input(f"Enter your {config_key.replace('_', '.')} value: ")
             if value:
-                with open(file_path, "w+") as f:
+                with open(file_path, "w+", encoding="utf_8") as f:
                     f.write(value)
 
     print("Configuration complete. You can now run the scripts.")
