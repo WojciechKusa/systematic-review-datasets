@@ -7,7 +7,15 @@ import streamlit as st
 
 from visualisation.utils import convert_xml_to_json, get_main_text
 
-DATA_PATH = "data/external/ec2s"
+
+DATA_PATH = "data/external/"
+
+folders = [x for x in os.listdir(DATA_PATH) if (os.path.isdir(os.path.join(DATA_PATH, x)) and os.path.isfile(os.path.join(DATA_PATH, x, "data_index.json")))]
+
+st.sidebar.title("Review selection")
+collection = st.sidebar.selectbox("Select a collection", folders)
+
+DATA_PATH = f"{DATA_PATH}/{collection}"
 
 data_index_file = f"{DATA_PATH}/data_index.json"
 
@@ -16,8 +24,7 @@ with open(data_index_file) as f:
 
 data_index_df = pd.DataFrame(data_index["data"])
 
-st.sidebar.title("Select a dataset")
-dataset = st.sidebar.selectbox("Select a dataset", data_index_df["review_id"].unique())
+dataset = st.sidebar.selectbox("Select a review", data_index_df["review_id"].unique())
 
 references_df = pd.read_csv(f"{DATA_PATH}/{dataset}/references.csv")
 
