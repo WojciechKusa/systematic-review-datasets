@@ -11,8 +11,7 @@ from ec2s.ec2s.prepare_dataset import prepare_dataset
 if __name__ == "__main__":
     TAR_REPOSITORY_PATH = "../../tar/"
 
-    # dataset_names = ["2017-TAR", "2018-TAR", "2019-TAR"]
-    dataset_names = ["2018-TAR"]
+    dataset_names = ["2017-TAR", "2018-TAR", "2019-TAR"]
     review_types = ["Intervention", "Prognosis", "Qualitative", "DTA"]
     dataset_splits = ["Training", "Testing"]
 

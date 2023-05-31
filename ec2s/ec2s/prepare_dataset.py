@@ -230,7 +230,7 @@ def prepare_dataset(
         url=cochrane_references, headers=HEADERS
     )
     df = parse_cochrane_references(soup=cochrane_references_soup)
-    # df = expand_references_details(df)
+    df = expand_references_details(df)
     df.to_csv(f"{out_path}/references.csv", index=False)
 
     n_studies_included = len(
