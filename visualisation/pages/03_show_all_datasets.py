@@ -32,22 +32,45 @@ stats = []
 for collection in collections:
     stats.append(
         {
-            "collection": collection,
-            "#datasets": len(collections[collection]),
-            "#included FT": sum(
+            "Collection name": collection,
+            "# reviews": len(collections[collection]),
+            "# unique reviews": len(
+                list(set([x["review_id"] for x in collections[collection]]))
+            ),
+            "# reviews in train": sum(
+                [1 for x in collections[collection] if x["dataset_split"] == "train"]
+            ),
+            "# reviews in test": sum(
+                [1 for x in collections[collection] if x["dataset_split"] == "test"]
+            ),
+            "# included FT": sum(
                 [
-                    dataset["n_references_included"]
+                    dataset["unique_references_included"]
                     for dataset in collections[collection]
                 ]
             ),
-            "avg #included FT": sum(
-                [
-                    dataset["n_references_included"]
-                    for dataset in collections[collection]
-                ]
-            )
-            / len(collections[collection]),
-            # "#excluded": sum([len(dataset["excluded"]) for dataset in collections[collection]]),
+            "Avg. #included FT": int(
+                sum(
+                    [
+                        dataset["unique_references_included"]
+                        for dataset in collections[collection]
+                    ]
+                )
+                / len(collections[collection])
+            ),
+            # "# excluded FT": sum(
+            #     [
+            #         dataset["unique_references_excluded"]
+            #         for dataset in collections[collection]
+            #     ]
+            # ),
+            # "avg #excluded FT": int(sum(
+            #     [
+            #         dataset["unique_references_excluded"]
+            #         for dataset in collections[collection]
+            #     ]
+            # )
+            # / len(collections[collection])),
         }
     )
 stats_df = pd.DataFrame(stats)
@@ -59,8 +82,16 @@ with st.expander("Review overlap"):
         for review in collections[collection]:
             if review["review_id"] not in review_counts:
                 review_counts[review["review_id"]] = []
-            review_counts[review["review_id"]].append(collection)
+            review_counts[review["review_id"]].append(
+                f"{collection} ({review['dataset_split']})"
+            )
 
+    overlapping_reviews = []
     for review in review_counts:
         if len(review_counts[review]) > 1:
             st.write(review, review_counts[review])
+            overlapping_reviews.append(review)
+
+st.write(f"Total number of overlapping reviews: {len(overlapping_reviews)}")
+
+st.write(f"Total number of unique reviews: {len(review_counts)}")
