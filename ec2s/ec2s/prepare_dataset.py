@@ -146,7 +146,7 @@ def prepare_dataset(
     versions = _get_versions(review_id=review_id)
     if use_version == "latest":
         if len(versions) == 0:
-            logger.warning(f"Review {review_id} has no versions")
+            logger.error(f"Review {review_id} has no versions")
             return {}
         if list(versions.keys())[-1] != 1:
             logger.debug(
@@ -154,9 +154,7 @@ def prepare_dataset(
             )
             version = _get_most_recent_available_version(review_id, versions)
             if not version:
-                logger.warning(
-                    f"Review {review_id} has no available versions with RevMan files"
-                )
+                logger.error(f"Review {review_id} has no available versions with RevMan files")
                 return {}
 
             logger.debug(
@@ -246,7 +244,7 @@ def prepare_dataset(
         df[df["reference_type"] == "excluded"]["citation"].unique()
     )
 
-    data_df = parse_data_and_analyses_section(soup=cochrane_references_soup)
+    data_df = parse_data_and_analyses_section(soup=cochrane_references_soup, review_id=review_id)
     data_df.to_csv(f"{out_path}/data_and_analyses.csv", index=False)
 
     if not data_df.empty:
@@ -261,7 +259,7 @@ def prepare_dataset(
                 .astype(int)
                 .mean()
             )
-        except KeyError:  # fixme: check other option for DTA reviews
+        except (KeyError, ValueError):  # fixme: check other option for DTA reviews
             n_outcomes = 0
             n_outcomes_and_subgroups = 0
             avg_studies_for_outcome = 0
