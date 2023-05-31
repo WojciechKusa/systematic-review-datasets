@@ -218,6 +218,9 @@ def prepare_dataset(review_id: str, output_data_path: str, use_version: str = "l
     unique_references_included = len(
         df[df["reference_type"] == "included"]["citation"].unique()
     )
+    unique_references_excluded = len(
+        df[df["reference_type"] == "excluded"]["citation"].unique()
+    )
 
     data_df = parse_data_and_analyses_section(url=cochrane_references, headers=HEADERS)
     data_df.to_csv(f"{out_path}/data_and_analyses.csv", index=False)
@@ -271,6 +274,7 @@ def prepare_dataset(review_id: str, output_data_path: str, use_version: str = "l
         "n_studies_included": n_studies_included,
         "n_references_included": n_references_included,
         "unique_references_included": unique_references_included,
+        "unique_references_excluded": unique_references_excluded,
         "n_comparisons": n_comparisons,
         "n_outcomes": n_outcomes,
         "n_outcomes_and_subgroups": n_outcomes_and_subgroups,
