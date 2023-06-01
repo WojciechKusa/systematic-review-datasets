@@ -221,7 +221,7 @@ class CohenDataset(datasets.GeneratorBasedBuilder):
                     "id": str(uid),
                     "document_id": pmid,
                     "text": text,
-                    "label": label,
+                    "labels": [label],
                 }
                 yield str(uid), data
 
