@@ -59,3 +59,18 @@ if __name__ == "__main__":
                     download_file(pdf_url, f"{save_folder}/{filename}.pdf")
 
             client.process("processFulltextDocument", save_folder, n=20, verbose=True)
+
+            extracted_full_texts = []
+            for file in os.listdir(save_folder):
+                if file.endswith("tei.xml"):
+                    extracted_full_texts.append(
+                        {
+                            "review_id": review,
+                            "document_id": file.split(".")[0],
+                            "reason_for_exclusion": df[df["reference_id"] == file.split(".")[0]]["reason_for_exclusion"].values[0],
+                            "decision": df[df["reference_id"] == file.split(".")[0]]["decision"].values[0],
+                        }
+                    )
+
+            extracted_full_texts_df = pd.DataFrame(extracted_full_texts)
+            extracted_full_texts_df.to_csv(f"{dataset}/{review}/extracted_full_texts.csv", index=False)

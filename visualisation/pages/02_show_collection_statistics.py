@@ -7,21 +7,27 @@ import streamlit as st
 
 from visualisation.utils import convert_xml_to_json, get_main_text
 
-DATA_PATH = "data/external/ec2s"
+DATA_PATH = "data/external/"
 
-data_index_file = f"{DATA_PATH}/data_index.json"
+folders = [x for x in os.listdir(DATA_PATH) if (os.path.isdir(os.path.join(DATA_PATH, x)) and os.path.isfile(os.path.join(DATA_PATH, x, "data_index.json")))]
+
+st.sidebar.title("Collection selection")
+collection = st.sidebar.selectbox("Select a collection", folders)
+
+data_index_file = f"{DATA_PATH}/{collection}/data_index.json"
 
 with open(data_index_file) as f:
     data_index = json.load(f)
 
 data_index_df = pd.DataFrame(data_index["data"])
 
-st.sidebar.title("Select a dataset")
 datasets = data_index_df["review_id"].unique()
+st.sidebar.write(f"Collection contains {len(datasets)} datasets")
+
 
 all_references_df = pd.DataFrame()
 for dataset in datasets:
-    references_df = pd.read_csv(f"{DATA_PATH}/{dataset}/references.csv")
+    references_df = pd.read_csv(f"{DATA_PATH}/{collection}/{dataset}/references.csv")
     references_df["dataset"] = dataset
     # df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
     # all_references_df = all_references_df.append(references_df)
@@ -78,10 +84,20 @@ if "exclusion_reason" in all_references_df.columns:
 else:
     st.write("No exclusion reasons found")
 
+extracted_ft_df = pd.DataFrame()
 st.title("Statistics of full-texts")
 full_text_files = []
 for dataset in datasets:
-    full_text_folder = f"{DATA_PATH}/{dataset}/pdfs/"
+    full_text_folder = f"{DATA_PATH}/{collection}/{dataset}/pdfs/"
+    if os.path.exists(f"{DATA_PATH}/{collection}/{dataset}/extracted_full_texts.csv"):
+        extracted_ft_df = pd.concat(
+            [
+                extracted_ft_df,
+                pd.read_csv(f"{DATA_PATH}/{collection}/{dataset}/extracted_full_texts.csv"),
+            ],
+            ignore_index=True,
+        )
+
     try:
         full_text_files.extend(
             [
@@ -94,6 +110,18 @@ for dataset in datasets:
         pass
 
 st.write(f"Found {len(full_text_files)} full-texts")
+
+# only included and excluded references
+extracted_ft_df = extracted_ft_df[
+    extracted_ft_df["decision"].isin(["included", "excluded"])
+]
+st.dataframe(extracted_ft_df)
+st.write(f"Found {len(extracted_ft_df)} extracted full-texts with decision")
+st.write(
+    extracted_ft_df["decision"].value_counts() / len(extracted_ft_df) * 100,
+    "Percentage of extracted full-texts with decision",
+)
+
 
 avg_full_text_length_characters = 0
 avg_full_text_length_words = 0

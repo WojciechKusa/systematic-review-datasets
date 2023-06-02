@@ -1,6 +1,7 @@
 import contextlib
 import logging
 import re
+import time
 from typing import Optional, Union
 
 import pandas as pd
@@ -13,6 +14,21 @@ logging.basicConfig(level=logging.INFO)
 
 def get_safe_text(element) -> str:
     return element.text if element else ""
+
+
+def get_safe_soup(url: str, headers: dict[str, str]) -> Optional[BeautifulSoup]:
+    """Returns a BeautifulSoup object or None. Tries three times and waits 60 seconds between each try."""
+    wait_time = 60
+    for _ in range(3):
+        r = requests.get(url, headers=headers)
+        if r.status_code == 200:
+            return BeautifulSoup(r.text, "html.parser")
+        else:
+            wait_time *= 2
+            logger.error(
+                f"Request failed with status code {r.status_code}. Waiting {wait_time} seconds before trying again."
+            )
+            time.sleep(wait_time)
 
 
 def _find_doi(urls: list[str]) -> Optional[str]:
@@ -90,12 +106,15 @@ def parse_cochrane_review_reference_section(
         header = _study.find("div", {"class": "reference-title-banner"}).text
         _study_id = _study.attrs.get("id")
         for citation in _study.find_all("div", {"class": "bibliography-section"}):
-            citation_data = get_citation_data(citation)
-            citation_data["header"] = header
-            citation_data["reference_type"] = reference_category
-            citation_data["study_id"] = _study_id
-
-            _studies.append(citation_data)
+            try:
+                citation_data = get_citation_data(citation)
+                citation_data["header"] = header
+                citation_data["reference_type"] = reference_category
+                citation_data["study_id"] = _study_id
+                _studies.append(citation_data)
+            except IndexError as e:
+                logger.error(f"Error parsing citation: {e}")
+                continue
 
     return pd.DataFrame(_studies)
 
@@ -117,15 +136,6 @@ def get_exclusion_reasons(exclusion_section, df: pd.DataFrame) -> pd.DataFrame:
         df.loc[df["study_id"] == study_id, "exclusion_reason"] = exclusion_reason
 
     return df
-
-
-def get_reference_page(url: str, headers: dict[str, str]) -> Optional[BeautifulSoup]:
-    r = requests.get(url, headers=headers)
-    if r.status_code != 200:
-        logger.error(f"Error {r.status_code} for {url}")
-        return None
-
-    return BeautifulSoup(r.content, "html.parser")
 
 
 def safe_convert_to_float(number):
@@ -191,8 +201,9 @@ def postprocess_comparison_table(df):
     return df
 
 
-def parse_data_and_analyses_section(url: str, headers: dict[str, str]) -> pd.DataFrame:
-    soup = get_reference_page(url, headers)
+def parse_data_and_analyses_section(
+    soup: Optional[BeautifulSoup], review_id: str
+) -> pd.DataFrame:
     if not soup:
         return pd.DataFrame()
 
@@ -216,7 +227,7 @@ def parse_data_and_analyses_section(url: str, headers: dict[str, str]) -> pd.Dat
             if df.columns.nlevels > 1:
                 df.columns = df.columns.droplevel(list(range(1, df.columns.nlevels)))
         except ValueError:
-            logger.error(f"Error reading table {comparison_id + 1} for {url}")
+            logger.error(f"Error reading table {comparison_id + 1} for {review_id}")
             continue
 
         df = df.dropna(axis=0, how="all").reset_index(drop=True)
@@ -241,8 +252,7 @@ def parse_data_and_analyses_section(url: str, headers: dict[str, str]) -> pd.Dat
     return out_df.reset_index(drop=True)
 
 
-def parse_cochrane_references(url: str, headers: dict[str, str]) -> pd.DataFrame:
-    soup = get_reference_page(url, headers)
+def parse_cochrane_references(soup: Optional[BeautifulSoup]) -> pd.DataFrame:
     if not soup:
         return pd.DataFrame()
 
@@ -276,11 +286,9 @@ def parse_cochrane_references(url: str, headers: dict[str, str]) -> pd.DataFrame
     return out_df.reset_index(drop=True)
 
 
-def parse_search_strategy(url: str, headers: dict[str, str]) -> dict[str, str]:
+def parse_search_strategy(soup: BeautifulSoup) -> dict[str, str]:
     """Parse appendix page containing search queries used in the systematic review.
     It returns the search query from the EMBASE databse."""
-    r = requests.get(url, headers=headers)
-    soup = BeautifulSoup(r.text, "html.parser")
     appendices = soup.find("section", {"class": "appendices"})
 
     if not appendices:
@@ -288,24 +296,26 @@ def parse_search_strategy(url: str, headers: dict[str, str]) -> dict[str, str]:
     appendices_dict = {}
     for section in appendices.find_all("section"):
         # find the highest level heading and use it as key
-        key = section.find(re.compile("^h[1-6]$")).text.strip()
-        value = section.text.replace(key, "").strip()
-        appendices_dict[key] = value
+        try:
+            key = section.find(re.compile("^h[1-6]$")).text.strip()
+            value = section.text.replace(key, "").strip()
+            appendices_dict[key] = value
+        except AttributeError:
+            continue
 
     return appendices_dict
 
 
-def parse_eligibility_criteria(url: str, headers: dict[str, str]) -> dict[str, str]:
+def parse_eligibility_criteria(soup: BeautifulSoup) -> dict[str, str]:
     """Parse methods section containing eligibility criteria used in the systematic review."""
-    r = requests.get(url, headers=headers)
-    soup = BeautifulSoup(r.text, "html.parser")
     methods = soup.find("section", {"class": "methods"})
     if not methods:
         return {}
     criteria = methods.find(
-        "h3",
+        re.compile("^h[1-6]$"),
         text=re.compile(
-            "Criteria for considering studies for this review", re.IGNORECASE
+            "Criteria for considering (studies|reviews) for (this review|inclusion|this synthesis)",
+            re.IGNORECASE,
         ),
     ).parent
 
