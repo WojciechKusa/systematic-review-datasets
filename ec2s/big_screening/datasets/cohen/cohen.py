@@ -110,7 +110,7 @@ class CohenDataset(datasets.GeneratorBasedBuilder):
             version=SOURCE_VERSION,
             description="cohen all source schema",
             schema="source",
-            subset_id=f"cohen_all",
+            subset_id="cohen_all",
         )
     )
 
