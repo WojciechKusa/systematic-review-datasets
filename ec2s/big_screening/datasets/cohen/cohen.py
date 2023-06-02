@@ -108,7 +108,7 @@ class CohenDataset(datasets.GeneratorBasedBuilder):
         BigBioConfig(
             name="cohen_all_source",
             version=SOURCE_VERSION,
-            description=f"cohen all source schema",
+            description="cohen all source schema",
             schema="source",
             subset_id=f"cohen_all",
         )
