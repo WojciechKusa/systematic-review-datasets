@@ -19,11 +19,10 @@ from typing import List, Tuple, Dict
 import datasets
 import pandas as pd
 
-from ec2s.big_screening.loader.bigbiohub import text_features
+from ec2s.big_screening.datasets.cohen.prepare import prepare_dataset, REVIEWS
 from ec2s.big_screening.loader.bigbiohub import BigBioConfig
 from ec2s.big_screening.loader.bigbiohub import Tasks
-from ec2s.big_screening.loader.systematic_review import SystematicReview
-from ec2s.big_screening.datasets.cohen.prepare import prepare_dataset, REVIEWS
+from ec2s.big_screening.loader.bigbiohub import text_features
 
 _LANGUAGES = ["English"]
 _PUBMED = True
@@ -58,7 +57,6 @@ Here is the data used in our research on automated classification of document ci
 """
 
 _HOMEPAGE = "https://dmice.ohsu.edu/cohenaa/systematic-drug-class-review-data.html"
-
 _LICENSE = ""
 
 _URLS = {
@@ -73,7 +71,6 @@ _SUPPORTED_TASKS = [Tasks.TEXT_CLASSIFICATION]
 
 _SOURCE_VERSION = "1.0.0"
 _BIGBIO_VERSION = "1.0.0"
-
 
 _CLASS_NAMES = ["included", "excluded"]
 
@@ -163,20 +160,6 @@ class CohenDataset(datasets.GeneratorBasedBuilder):
                     "split": "train",
                 },
             ),
-            # datasets.SplitGenerator(
-            #     name=datasets.Split.TEST,
-            #     gen_kwargs={
-            #         "filepath": os.path.join(data_dir, "test.jsonl"),
-            #         "split": "test",
-            #     },
-            # ),
-            # datasets.SplitGenerator(
-            #     name=datasets.Split.VALIDATION,
-            #     gen_kwargs={
-            #         "filepath": os.path.join(data_dir, "dev.jsonl"),
-            #         "split": "dev",
-            #     },
-            # ),
         ]
 
     def _generate_examples(self, filepath, split: str) -> Tuple[int, Dict]:
@@ -228,3 +211,10 @@ class CohenDataset(datasets.GeneratorBasedBuilder):
 
 if __name__ == "__main__":
     x = datasets.load_dataset(__file__, name="cohen_ADHD_source")
+    print(x)
+
+    y = datasets.load_dataset(__file__, name="cohen_ADHD_bigbio_text")
+    print(y)
+
+    z = datasets.load_dataset(__file__, name="cohen_all_source")
+    print(z)

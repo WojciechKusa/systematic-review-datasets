@@ -1,7 +1,6 @@
 """This module prepares Drug systematic review data.
 Inout data comes from: https://dmice.ohsu.edu/cohenaa/epc-ir-data/epc-ir.clean.tsv
 """
-import argparse
 import copy
 
 import pandas as pd
@@ -85,15 +84,3 @@ def prepare_dataset(
 
     mark_all_files_prepared(dataset_directory=output_folder)
 
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--output_folder",
-        default="../../data/processed/",
-        type=str,
-    )
-
-    args = parser.parse_args()
-
-    prepare_dataset(output_folder=args.output_folder)
