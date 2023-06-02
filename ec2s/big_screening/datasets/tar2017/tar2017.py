@@ -58,7 +58,7 @@ _URLS = {
     "tar": "https://github.com/WojciechKusa/tar/archive/refs/heads/master.zip",
 }
 
-_SUPPORTED_TASKS = [Tasks.TEXT_CLASSIFICATION, Tasks.QUESTION_ANSWERING]
+_SUPPORTED_TASKS = [Tasks.TEXT_CLASSIFICATION]
 
 _SOURCE_VERSION = "1.0.0"
 _BIGBIO_VERSION = "1.0.0"
@@ -78,24 +78,24 @@ class Tar2017Dataset(datasets.GeneratorBasedBuilder):
     for dataset_version in dataset_versions:
         BUILDER_CONFIGS.append(
             BigBioConfig(
-                name=f"tar_{dataset_version}_source",
+                name=f"tar2017_{dataset_version}_source",
                 version=SOURCE_VERSION,
-                description=f"tar {dataset_version} source schema",
+                description=f"tar2017 {dataset_version} source schema",
                 schema="source",
-                subset_id=f"tar_{dataset_version}",
+                subset_id=f"tar2017_{dataset_version}",
             )
         )
         BUILDER_CONFIGS.append(
             BigBioConfig(
-                name=f"tar_{dataset_version}_bigbio_text",
+                name=f"tar2017_{dataset_version}_bigbio_text",
                 version=BIGBIO_VERSION,
-                description=f"tar {dataset_version} BigBio schema",
+                description=f"tar2017 {dataset_version} BigBio schema",
                 schema="bigbio_text",
-                subset_id=f"tar_{dataset_version}",
+                subset_id=f"tar2017_{dataset_version}",
             )
         )
 
-    DEFAULT_CONFIG_NAME = "tar_source"
+    DEFAULT_CONFIG_NAME = "tar2017_source"
 
     def _info(self) -> datasets.DatasetInfo:
 
@@ -217,6 +217,6 @@ class Tar2017Dataset(datasets.GeneratorBasedBuilder):
 
 
 if __name__ == "__main__":
-    x = datasets.load_dataset(__file__, name="tar_all_source")
+    x = datasets.load_dataset(__file__, name="tar2017_all_source")
     print(type(x))
     print(x)
