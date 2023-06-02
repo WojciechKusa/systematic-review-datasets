@@ -9,7 +9,14 @@ from visualisation.utils import convert_xml_to_json, get_main_text
 
 DATA_PATH = "data/external/"
 
-folders = [x for x in os.listdir(DATA_PATH) if (os.path.isdir(os.path.join(DATA_PATH, x)) and os.path.isfile(os.path.join(DATA_PATH, x, "data_index.json")))]
+folders = [
+    x
+    for x in os.listdir(DATA_PATH)
+    if (
+        os.path.isdir(os.path.join(DATA_PATH, x))
+        and os.path.isfile(os.path.join(DATA_PATH, x, "data_index.json"))
+    )
+]
 
 st.sidebar.title("Collection selection")
 collection = st.sidebar.selectbox("Select a collection", folders)
@@ -90,10 +97,17 @@ full_text_files = []
 for dataset in datasets:
     full_text_folder = f"{DATA_PATH}/{collection}/{dataset}/pdfs/"
     if os.path.exists(f"{DATA_PATH}/{collection}/{dataset}/extracted_full_texts.csv"):
+        try:
+            pd.read_csv(f"{DATA_PATH}/{collection}/{dataset}/extracted_full_texts.csv")
+        except pd.errors.EmptyDataError:
+            continue
+
         extracted_ft_df = pd.concat(
             [
                 extracted_ft_df,
-                pd.read_csv(f"{DATA_PATH}/{collection}/{dataset}/extracted_full_texts.csv"),
+                pd.read_csv(
+                    f"{DATA_PATH}/{collection}/{dataset}/extracted_full_texts.csv"
+                ),
             ],
             ignore_index=True,
         )
@@ -117,10 +131,25 @@ extracted_ft_df = extracted_ft_df[
 ]
 st.dataframe(extracted_ft_df)
 st.write(f"Found {len(extracted_ft_df)} extracted full-texts with decision")
-st.write(
-    extracted_ft_df["decision"].value_counts() / len(extracted_ft_df) * 100,
-    "Percentage of extracted full-texts with decision",
+
+ft_stats_df = pd.DataFrame(
+    {
+        "Total": [len(extracted_ft_df)],
+        "Included": [len(extracted_ft_df[extracted_ft_df["decision"] == "included"])],
+        "Excluded": [len(extracted_ft_df[extracted_ft_df["decision"] == "excluded"])],
+        "Included %": [
+            len(extracted_ft_df[extracted_ft_df["decision"] == "included"])
+            / len(extracted_ft_df)
+            * 100
+        ],
+        "Excluded %": [
+            len(extracted_ft_df[extracted_ft_df["decision"] == "excluded"])
+            / len(extracted_ft_df)
+            * 100
+        ],
+    }
 )
+st.dataframe(ft_stats_df)
 
 
 avg_full_text_length_characters = 0
