@@ -106,7 +106,7 @@ class CohenDataset(datasets.GeneratorBasedBuilder):
     # Add an "all" config that combines all the reviews -- only for source schema
     BUILDER_CONFIGS.append(
         BigBioConfig(
-            name=f"cohen_all_source",
+            name="cohen_all_source",
             version=SOURCE_VERSION,
             description=f"cohen all source schema",
             schema="source",
