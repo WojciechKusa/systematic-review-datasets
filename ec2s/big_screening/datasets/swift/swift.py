@@ -109,7 +109,7 @@ class SwiftDataset(datasets.GeneratorBasedBuilder):
     # Add an "all" config that combines all the reviews -- only for source schema
     BUILDER_CONFIGS.append(
         BigBioConfig(
-            name=f"swift_all_source",
+            name="swift_all_source",
             version=SOURCE_VERSION,
             description=f"swift all source schema",
             schema="source",
