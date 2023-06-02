@@ -18,8 +18,20 @@ def download_file(url: str, download_path: str):
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:55.0) Gecko/20100101 Firefox/55.0",
     }
     try:
-        r = requests.get(url, stream=True, allow_redirects=True, headers=headers, verify=ssl.CERT_NONE)
-    except (requests.exceptions.InvalidSchema, requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout) as e:
+        r = requests.get(
+            url,
+            stream=True,
+            allow_redirects=True,
+            headers=headers,
+            verify=ssl.CERT_NONE,
+        )
+    except (
+        requests.exceptions.InvalidSchema,
+        requests.exceptions.ConnectTimeout,
+        requests.exceptions.ConnectionError,
+        requests.exceptions.ReadTimeout,
+        requests.exceptions.TooManyRedirects,
+    ) as e:
         logger.warning(f"Invalid schema for {url}, error: {e}")
         return
     with open(download_path, "wb") as f:
@@ -30,7 +42,7 @@ def download_file(url: str, download_path: str):
 if __name__ == "__main__":
     datasets = [
         "../data/external/ec2s/",
-        "../data/external/tar-systematic_reviews/",
+        "../data/external/pcs/",
     ]
 
     for dataset in datasets:
@@ -51,6 +63,9 @@ if __name__ == "__main__":
                 else:
                     pdf_url = None
 
+                if row["reference_type"] not in ["included", "excluded"]:
+                    continue
+
                 if not os.path.exists(save_folder):
                     os.makedirs(save_folder)
 
@@ -63,14 +78,26 @@ if __name__ == "__main__":
             extracted_full_texts = []
             for file in os.listdir(save_folder):
                 if file.endswith("tei.xml"):
+                    try:
+                        exclusion_reason = df[df["reference_id"] == file.split(".")[0]][
+                            "exclusion_reason"
+                        ].values[0]
+                    except KeyError:
+                        exclusion_reason = ""
                     extracted_full_texts.append(
                         {
                             "review_id": review,
                             "document_id": file.split(".")[0],
-                            "reason_for_exclusion": df[df["reference_id"] == file.split(".")[0]]["reason_for_exclusion"].values[0],
-                            "decision": df[df["reference_id"] == file.split(".")[0]]["decision"].values[0],
+                            "reason_for_exclusion": exclusion_reason,
+                            "decision": df[df["reference_id"] == file.split(".")[0]][
+                                "reference_type"
+                            ].values[0],
                         }
                     )
 
             extracted_full_texts_df = pd.DataFrame(extracted_full_texts)
-            extracted_full_texts_df.to_csv(f"{dataset}/{review}/extracted_full_texts.csv", index=False)
+            if len(extracted_full_texts_df) == 0:
+                continue
+            extracted_full_texts_df.to_csv(
+                f"{dataset}/{review}/extracted_full_texts.csv", index=False
+            )
