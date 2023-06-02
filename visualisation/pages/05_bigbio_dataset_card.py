@@ -10,9 +10,7 @@ from matplotlib_venn import venn2, venn3
 from visualisation.ngram import get_tuples_manual_sentences
 from rich import print as rprint
 
-from bigbio.dataloader import BigBioConfigHelpers
-
-# from matplotlib_venn_wordcloud import venn2_wordcloud, venn3_wordcloud
+from ec2s.big_screening.dataloader import BigBioConfigHelpers
 
 
 # vanilla tokenizer
@@ -206,7 +204,6 @@ if __name__ == "__main__":
         s.pressed_first_button = False
     data_name = st.sidebar.selectbox("dataset", configs_set)
     st.sidebar.write("you selected:", data_name)
-    st.header(f"Dataset stats for {data_name}")
 
     # setup data configs
     data_helpers = conhelps.for_dataset(data_name)
@@ -218,6 +215,7 @@ if __name__ == "__main__":
         s.pressed_first_button = True
         helper = conhelps.for_config_name(data_config_name)
         metadata_helper = helper.get_metadata()
+        st.header(f"Dataset stats for {data_config_name}")
 
         parse_metrics(metadata_helper, st.sidebar)
 
@@ -225,8 +223,9 @@ if __name__ == "__main__":
         data_idx = data_config_names.index(data_config_name)
         data_config = data_configs[data_idx]
         dataset = load_dataset(
-            #FIXME (Wojtek):
-            f"bigbio/biodatasets/{data_name}/{data_name}.py", name=data_config_name
+            # FIXME (Wojtek): hardcoded path
+            f"ec2s/big_screening/datasets/{data_name}/{data_name}.py",
+            name=data_config_name,
         )
         # general token length
         tok_hist_data, ngram_counters = parse_token_length_and_n_gram(
@@ -246,7 +245,9 @@ if __name__ == "__main__":
         # draw bar chart for counter
         draw_bar(label_df, "labels", counter_type, col2)
         venn_fig, ax = plt.subplots()
-        if len(ngram_counters) == 2:
+        if len(ngram_counters) == 1:
+            pass
+        elif len(ngram_counters) == 2:
             union_counter = ngram_counters[0] + ngram_counters[1]
             print(ngram_counters[0].most_common(10))
             print(ngram_counters[1].most_common(10))
@@ -272,7 +273,10 @@ if __name__ == "__main__":
                 set_colors=IBM_COLORS[:4],
                 subset_label_formatter=lambda x: f"{(x/total):1.0%}",
             )
-        venn_fig.suptitle(f"{N}-gram intersection for {data_name}", fontsize=20)
-        st.pyplot(venn_fig)
+        if len(ngram_counters) != 1:
+            venn_fig.suptitle(f"{N}-gram intersection for {data_name}", fontsize=20)
+            st.pyplot(venn_fig)
+        else:
+            print("Diagram not supported for 1 dataset split")
 
     st.sidebar.button("Re-run")
