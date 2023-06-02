@@ -84,10 +84,20 @@ if "exclusion_reason" in all_references_df.columns:
 else:
     st.write("No exclusion reasons found")
 
+extracted_ft_df = pd.DataFrame()
 st.title("Statistics of full-texts")
 full_text_files = []
 for dataset in datasets:
     full_text_folder = f"{DATA_PATH}/{collection}/{dataset}/pdfs/"
+    if os.path.exists(f"{DATA_PATH}/{collection}/{dataset}/extracted_full_texts.csv"):
+        extracted_ft_df = pd.concat(
+            [
+                extracted_ft_df,
+                pd.read_csv(f"{DATA_PATH}/{collection}/{dataset}/extracted_full_texts.csv"),
+            ],
+            ignore_index=True,
+        )
+
     try:
         full_text_files.extend(
             [
@@ -100,6 +110,18 @@ for dataset in datasets:
         pass
 
 st.write(f"Found {len(full_text_files)} full-texts")
+
+# only included and excluded references
+extracted_ft_df = extracted_ft_df[
+    extracted_ft_df["decision"].isin(["included", "excluded"])
+]
+st.dataframe(extracted_ft_df)
+st.write(f"Found {len(extracted_ft_df)} extracted full-texts with decision")
+st.write(
+    extracted_ft_df["decision"].value_counts() / len(extracted_ft_df) * 100,
+    "Percentage of extracted full-texts with decision",
+)
+
 
 avg_full_text_length_characters = 0
 avg_full_text_length_words = 0
