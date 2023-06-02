@@ -46,7 +46,11 @@ def search_pubmed(query: str) -> str:
     if not query:
         return ""
     handle = Entrez.esearch(db="pubmed", term=query)
-    record = Entrez.read(handle)
+    try:
+        record = Entrez.read(handle)
+    except (HTTPError, RuntimeError) as e:
+        print(f"Error: {e}")
+        return ""
     return str(record["IdList"][0]) if len(record["IdList"]) > 0 else ""
 
 
