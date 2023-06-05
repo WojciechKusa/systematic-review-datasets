@@ -13,8 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import json
-from typing import List, Tuple, Dict, Any
-import os
+from typing import List, Tuple, Dict
+
 import datasets
 import pandas as pd
 
@@ -39,9 +39,7 @@ Systematic Review dataset focused on full-text screening.
 _HOMEPAGE = "https://github.com/WojciechKusa/systematic-review-datasets"
 _LICENSE = ""
 
-_URLS = {
-    "livsb_ft": "../../../../data/LivSB/LivSB-FT.zip"
-}
+_URLS = {"livsb_ft": "../../../../data/LivSB/LivSB-FT.zip"}
 
 _SUPPORTED_TASKS = [Tasks.TEXT_CLASSIFICATION, Tasks.QUESTION_ANSWERING]
 
@@ -49,6 +47,7 @@ _SOURCE_VERSION = "1.0.0"
 _BIGBIO_VERSION = "1.0.0"
 
 _CLASS_NAMES = ["included", "excluded"]
+
 
 class LivsbFtDataset(datasets.GeneratorBasedBuilder):
     """Systematic Review dataset focused on full-text screening."""
@@ -174,10 +173,10 @@ class LivsbFtDataset(datasets.GeneratorBasedBuilder):
                 pmid = None
 
             review_criteria = reviews_metadata[example["review_id"]]["criteria_text"]
+            review_abstract = reviews_metadata[example["review_id"]]["abstract"]
             review_title = reviews_metadata[example["review_id"]]["title"]
 
-            text = f"{review_title}\n{review_criteria}\n{title}\n\n{abstract}\n\n{main_text}"
-
+            text = f"{review_title}\n{review_abstract}\n{review_criteria}\n{title}\n\n{abstract}\n\n{main_text}"
 
             uid += 1
             if self.config.schema == "source":
