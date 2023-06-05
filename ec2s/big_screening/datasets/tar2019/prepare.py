@@ -26,12 +26,12 @@ def get_from_pubmed(df) -> pd.DataFrame:
     step = 2000
     for x in range(0, data_size, step):
         pubmed_id_list = df[pubmed_id_column].tolist()[x : x + step]
-        handle = Entrez.efetch(
-            db="pubmed", id=pubmed_id_list, rettype="medline", retmode="text"
-        )
-
-        articles = Medline.parse(handle)
         try:
+            handle = Entrez.efetch(
+                db="pubmed", id=pubmed_id_list, rettype="medline", retmode="text"
+            )
+
+            articles = Medline.parse(handle)
             articles = list(articles)
         except http.client.HTTPException as e:
             print(e)
@@ -55,6 +55,7 @@ def prepare_dataset(
     input_folder: str, output_folder: str, dataset_splits: dict[str, dict[str, str]]
 ) -> None:
     if is_prepared(output_folder):
+        print("PubMed data is already prepared.")
         return
 
     for dataset_split, review_types in dataset_splits.items():

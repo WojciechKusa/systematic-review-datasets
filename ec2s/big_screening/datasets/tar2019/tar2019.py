@@ -87,7 +87,7 @@ class Tar2019Dataset(datasets.GeneratorBasedBuilder):
             )
         )
 
-    DEFAULT_CONFIG_NAME = "tar2019_source"
+    DEFAULT_CONFIG_NAME = "tar2019_all_source"
 
     def _info(self) -> datasets.DatasetInfo:
 
@@ -167,12 +167,19 @@ class Tar2019Dataset(datasets.GeneratorBasedBuilder):
         split: str,
     ) -> Tuple[int, Dict]:
         """Yields examples as (key, example) tuples."""
+        breakpoint()
+        if split == "train":
+            dataset_split = "Training"
+        elif split == "test":
+            dataset_split = "Testing"
+        else:
+            raise ValueError(f"Unsupported split {split}")
 
         review = "_".join(self.config.subset_id.split("_")[1:])
 
         qrels_df = pd.DataFrame()
         for review_type, qrels_file in qrels_dict.items():
-            qrels_path = os.path.join(qrels_data_dir, qrels_file)
+            qrels_path = os.path.join(qrels_data_dir, f"tar-master/2019-TAR/Task2/{dataset_split}/{review_type}/qrels/{qrels_file}")
             qrels_df = pd.concat(
                 [
                     qrels_df,
