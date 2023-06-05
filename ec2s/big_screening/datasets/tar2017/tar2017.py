@@ -12,57 +12,50 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import os
 from typing import List, Tuple, Dict
+import importlib
 
 import datasets
 import pandas as pd
 
-from ec2s.big_screening.datasets.cohen.prepare import prepare_dataset, REVIEWS
+from ec2s.big_screening.loader.bigbiohub import text_features
 from ec2s.big_screening.loader.bigbiohub import BigBioConfig
 from ec2s.big_screening.loader.bigbiohub import Tasks
-from ec2s.big_screening.loader.bigbiohub import text_features
+from ec2s.big_screening.datasets.tar2017.prepare import prepare_dataset
+
 
 _LANGUAGES = ["English"]
 _PUBMED = True
 _LOCAL = False
 
 _CITATION = """\
-@article{Cohen2006,
-	author = {Cohen, A. M. and Hersh, W. R. and Peterson, K. and Yen, Po Yin},
-	doi = {10.1197/jamia.M1929},
-	issn = {10675027},
-	journal = {Journal of the American Medical Informatics Association},
-	month = {3},
-	number = {2},
-	pages = {206--219},
-	pmid = {16357352},
-	publisher = {Oxford University Press},
-	title = {{Reducing workload in systematic review preparation using automated citation classification}},
-	url = {/pmc/articles/PMC1447545/ /pmc/articles/PMC1447545/?report=abstract https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1447545/},
-	volume = {13},
-	year = {2006},
-	bdsk-url-1 = {/pmc/articles/PMC1447545/%20/pmc/articles/PMC1447545/?report=abstract%20https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1447545/},
-	bdsk-url-2 = {https://doi.org/10.1197/jamia.M1929}}
+@article{Kanoulas2017CLEFOverview,
+	author = {Kanoulas, Evangelos and Li, Dan and Azzopardi, Leif and Spijker, Rene},
+	issn = {1613-0073},
+	journal = {CEUR Workshop Proceedings},
+	keywords = {Active learning, Evaluation, Information retrieval, Systematic reviews, TAR, Text classification},
+	month = {9},
+	pages = {1--29},
+	title = {{CLEF 2017 technologically assisted reviews in empirical medicine overview}},
+	url = {https://pureportal.strath.ac.uk/en/publications/clef-2017-technologically-assisted-reviews-in-empirical-medicine-},
+	volume = {1866},
+	year = {2017},
+	bdsk-url-1 = {https://pureportal.strath.ac.uk/en/publications/clef-2017-technologically-assisted-reviews-in-empirical-medicine-}}
 """
 
-_DATASETNAME = "Cohen"
-_DISPLAYNAME = "Cohen"
+_DATASETNAME = "tar2017"
+_DISPLAYNAME = "tar2017"
 
 _DESCRIPTION = """\
-Systematic Drug Class Review Gold Standard Data
-PubMed Identifiers Annotated by Inclusion in Systematic Review
-Here is the data used in our research on automated classification of document citations for systematic review of drug classes.
+Technologically Assisted Reviews in Empirical Medicine 2017
 """
 
-_HOMEPAGE = "https://dmice.ohsu.edu/cohenaa/systematic-drug-class-review-data.html"
-_LICENSE = ""
+_HOMEPAGE = "https://github.com/CLEF-TAR/tar"
+_LICENSE = "MIT license"
 
 _URLS = {
-    _DATASETNAME: {
-        "cohen": "https://dmice.ohsu.edu/cohenaa/epc-ir-data/epc-ir.clean.tsv",
-    }
+    "tar": "https://github.com/WojciechKusa/tar/archive/refs/heads/master.zip",
 }
 
 _SUPPORTED_TASKS = [Tasks.TEXT_CLASSIFICATION]
@@ -70,52 +63,41 @@ _SUPPORTED_TASKS = [Tasks.TEXT_CLASSIFICATION]
 _SOURCE_VERSION = "1.0.0"
 _BIGBIO_VERSION = "1.0.0"
 
+
 _CLASS_NAMES = ["included", "excluded"]
 
 
-class CohenDataset(datasets.GeneratorBasedBuilder):
-    """Systematic Drug Class Review Gold Standard Data."""
+class Tar2017Dataset(datasets.GeneratorBasedBuilder):
+    """Technologically Assisted Reviews in Empirical Medicine 2017."""
 
     SOURCE_VERSION = datasets.Version(_SOURCE_VERSION)
     BIGBIO_VERSION = datasets.Version(_BIGBIO_VERSION)
 
     BUILDER_CONFIGS = []
-    reviews = REVIEWS
-    for dataset_version in reviews:
+    dataset_versions = ["all"]
+    for dataset_version in dataset_versions:
         BUILDER_CONFIGS.append(
             BigBioConfig(
-                name=f"cohen_{dataset_version}_source",
+                name=f"tar2017_{dataset_version}_source",
                 version=SOURCE_VERSION,
-                description=f"cohen {dataset_version} source schema",
+                description=f"tar2017 {dataset_version} source schema",
                 schema="source",
-                subset_id=f"cohen_{dataset_version}",
+                subset_id=f"tar2017_{dataset_version}",
             )
         )
         BUILDER_CONFIGS.append(
             BigBioConfig(
-                name=f"cohen_{dataset_version}_bigbio_text",
+                name=f"tar2017_{dataset_version}_bigbio_text",
                 version=BIGBIO_VERSION,
-                description=f"cohen {dataset_version} BigBio schema",
+                description=f"tar2017 {dataset_version} BigBio schema",
                 schema="bigbio_text",
-                subset_id=f"cohen_{dataset_version}",
+                subset_id=f"tar2017_{dataset_version}",
             )
         )
 
-    # Add an "all" config that combines all the reviews -- only for source schema
-    BUILDER_CONFIGS.append(
-        BigBioConfig(
-            name="cohen_all_source",
-            version=SOURCE_VERSION,
-            description="cohen all source schema",
-            schema="source",
-            subset_id="cohen_all",
-        )
-    )
-
-    DEFAULT_CONFIG_NAME = "cohen_all_source"
+    DEFAULT_CONFIG_NAME = "tar2017_all_source"
 
     def _info(self) -> datasets.DatasetInfo:
-        """Returns the dataset metadata."""
 
         if self.config.schema == "source":
             features = datasets.Features(
@@ -142,40 +124,66 @@ class CohenDataset(datasets.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager) -> List[datasets.SplitGenerator]:
         """Returns SplitGenerators."""
+        data_dir = dl_manager.download_and_extract(_URLS["tar"])
+        pubmed_output_dir = "/".join(self.cache_dir.split("/")[:-3])
 
-        data_dir = "/".join(self.cache_dir.split("/")[:-3])
-        prepare_dataset(output_folder=data_dir)
-
-        # Not all datasets have predefined canonical train/val/test splits.
-        # If your dataset has no predefined splits, use datasets.Split.TRAIN for all of the data.
+        prepare_dataset(input_folder=data_dir, output_folder=pubmed_output_dir)
 
         return [
             datasets.SplitGenerator(
                 name=datasets.Split.TRAIN,
                 # Whatever you put in gen_kwargs will be passed to _generate_examples
                 gen_kwargs={
-                    "filepath": os.path.join(data_dir, "train.jsonl"),
+                    "qrels_path": os.path.join(
+                        data_dir, "tar-master/2017-TAR/training/qrels/qrel_abs_train"
+                    ),
                     "split": "train",
+                },
+            ),
+            datasets.SplitGenerator(
+                name=datasets.Split.TEST,
+                gen_kwargs={
+                    "qrels_path": os.path.join(
+                        data_dir, "tar-master/2017-TAR/testing/qrels/qrel_abs_test.txt"
+                    ),
+                    "split": "test",
                 },
             ),
         ]
 
-    def _generate_examples(self, filepath, split: str) -> Tuple[int, Dict]:
+    def _generate_examples(self, qrels_path, split: str) -> Tuple[int, Dict]:
         """Yields examples as (key, example) tuples."""
 
         data_dir = "/".join(self.cache_dir.split("/")[:-3])
         review = "_".join(self.config.subset_id.split("_")[1:])
-
+        qrels_df = pd.read_csv(
+            qrels_path,
+            sep="\s+",
+            header=None,
+            names=["review_id", "0", "PMID", "Label"],
+        )
+        REVIEWS = qrels_df["review_id"].unique().tolist()
         uid = 0
 
         if review == "all":
             df = pd.DataFrame()
             for r in REVIEWS:
-                review_df = pd.read_csv(os.path.join(data_dir, f"{r}.tsv"), sep="\t")
+                review_df = pd.read_csv(os.path.join(data_dir, f"{r}.csv"))
                 review_df["Review"] = r
+                # remove old Label column
+                review_df = review_df.drop(columns=["Label"])
+
+                # add Label from qrels_df to review_df based on PMID and review_id
+                review_df = review_df.merge(
+                    qrels_df,
+                    left_on=["PMID", "Review"],
+                    right_on=["PMID", "review_id"],
+                    how="left",
+                )
+
                 df = pd.concat([df, review_df])
         else:
-            df = pd.read_csv(os.path.join(data_dir, f"{review}.tsv"), sep="\t")
+            df = pd.read_csv(os.path.join(data_dir, f"{review}.csv"))
             df["Review"] = review
 
         for key, example in df.iterrows():
@@ -208,11 +216,6 @@ class CohenDataset(datasets.GeneratorBasedBuilder):
 
 
 if __name__ == "__main__":
-    x = datasets.load_dataset(__file__, name="cohen_ADHD_source")
+    x = datasets.load_dataset(__file__, name="tar2017_all_source")
+    print(type(x))
     print(x)
-
-    y = datasets.load_dataset(__file__, name="cohen_ADHD_bigbio_text")
-    print(y)
-
-    z = datasets.load_dataset(__file__, name="cohen_all_source")
-    print(z)

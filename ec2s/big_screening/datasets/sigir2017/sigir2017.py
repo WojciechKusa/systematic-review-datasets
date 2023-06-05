@@ -12,14 +12,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import json
 import os
+import re
 from typing import List, Tuple, Dict
 
 import datasets
 import pandas as pd
 
-from ec2s.big_screening.datasets.cohen.prepare import prepare_dataset, REVIEWS
+from ec2s.big_screening.datasets.sigir2017.prepare import prepare_dataset
 from ec2s.big_screening.loader.bigbiohub import BigBioConfig
 from ec2s.big_screening.loader.bigbiohub import Tasks
 from ec2s.big_screening.loader.bigbiohub import text_features
@@ -29,43 +30,31 @@ _PUBMED = True
 _LOCAL = False
 
 _CITATION = """\
-@article{Cohen2006,
-	author = {Cohen, A. M. and Hersh, W. R. and Peterson, K. and Yen, Po Yin},
-	doi = {10.1197/jamia.M1929},
-	issn = {10675027},
-	journal = {Journal of the American Medical Informatics Association},
-	month = {3},
-	number = {2},
-	pages = {206--219},
-	pmid = {16357352},
-	publisher = {Oxford University Press},
-	title = {{Reducing workload in systematic review preparation using automated citation classification}},
-	url = {/pmc/articles/PMC1447545/ /pmc/articles/PMC1447545/?report=abstract https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1447545/},
-	volume = {13},
-	year = {2006},
-	bdsk-url-1 = {/pmc/articles/PMC1447545/%20/pmc/articles/PMC1447545/?report=abstract%20https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1447545/},
-	bdsk-url-2 = {https://doi.org/10.1197/jamia.M1929}}
+@inproceedings{scells2017collection,
+	Author = {Scells, Harrisen and Zuccon, Guido and Koopman, Bevan and Deacon, Anthony and Geva, Shlomo and Azzopardi, Leif},
+	Booktitle = {Proceedings of the 40th international ACM SIGIR conference on Research and development in Information Retrieval},
+	Organization = {ACM},
+	Title = {A Test Collection for Evaluating Retrieval of Studies for Inclusion in Systematic Reviews},
+	Year = {2017}
+}
 """
 
-_DATASETNAME = "Cohen"
-_DISPLAYNAME = "Cohen"
+_DATASETNAME = "sigir2017"
+_DISPLAYNAME = "sigir2017"
 
 _DESCRIPTION = """\
-Systematic Drug Class Review Gold Standard Data
-PubMed Identifiers Annotated by Inclusion in Systematic Review
-Here is the data used in our research on automated classification of document citations for systematic review of drug classes.
+Dataset containing a collection of queries for the paper "A Test Collection for Evaluating Retrieval of Studies for Inclusion in Systematic Reviews".
 """
 
-_HOMEPAGE = "https://dmice.ohsu.edu/cohenaa/systematic-drug-class-review-data.html"
+_HOMEPAGE = "https://github.com/ielab/SIGIR2017-SysRev-Collection"
 _LICENSE = ""
 
 _URLS = {
-    _DATASETNAME: {
-        "cohen": "https://dmice.ohsu.edu/cohenaa/epc-ir-data/epc-ir.clean.tsv",
-    }
+    "sigir2017": "https://github.com/ielab/SIGIR2017-SysRev-Collection/archive/refs/heads/master.zip",
 }
+MAIN_REPO_FOLDER = "SIGIR2017-SysRev-Collection-master"
 
-_SUPPORTED_TASKS = [Tasks.TEXT_CLASSIFICATION]
+_SUPPORTED_TASKS = [Tasks.TEXT_CLASSIFICATION, Tasks.QUESTION_ANSWERING]
 
 _SOURCE_VERSION = "1.0.0"
 _BIGBIO_VERSION = "1.0.0"
@@ -73,49 +62,37 @@ _BIGBIO_VERSION = "1.0.0"
 _CLASS_NAMES = ["included", "excluded"]
 
 
-class CohenDataset(datasets.GeneratorBasedBuilder):
-    """Systematic Drug Class Review Gold Standard Data."""
+class Sigir2017Dataset(datasets.GeneratorBasedBuilder):
+    """Dataset containing a collection of queries for the paper "A Test Collection for Evaluating Retrieval of Studies for Inclusion in Systematic Reviews"."""
 
     SOURCE_VERSION = datasets.Version(_SOURCE_VERSION)
     BIGBIO_VERSION = datasets.Version(_BIGBIO_VERSION)
 
     BUILDER_CONFIGS = []
-    reviews = REVIEWS
-    for dataset_version in reviews:
+    dataset_versions = ["all"]
+    for dataset_version in dataset_versions:
         BUILDER_CONFIGS.append(
             BigBioConfig(
-                name=f"cohen_{dataset_version}_source",
+                name=f"sigir2017_{dataset_version}_source",
                 version=SOURCE_VERSION,
-                description=f"cohen {dataset_version} source schema",
+                description=f"sigir2017 {dataset_version} source schema",
                 schema="source",
-                subset_id=f"cohen_{dataset_version}",
+                subset_id=f"sigir2017_{dataset_version}",
             )
         )
         BUILDER_CONFIGS.append(
             BigBioConfig(
-                name=f"cohen_{dataset_version}_bigbio_text",
+                name=f"sigir2017_{dataset_version}_bigbio_text",
                 version=BIGBIO_VERSION,
-                description=f"cohen {dataset_version} BigBio schema",
+                description=f"sigir2017 {dataset_version} BigBio schema",
                 schema="bigbio_text",
-                subset_id=f"cohen_{dataset_version}",
+                subset_id=f"sigir2017_{dataset_version}",
             )
         )
 
-    # Add an "all" config that combines all the reviews -- only for source schema
-    BUILDER_CONFIGS.append(
-        BigBioConfig(
-            name="cohen_all_source",
-            version=SOURCE_VERSION,
-            description="cohen all source schema",
-            schema="source",
-            subset_id="cohen_all",
-        )
-    )
-
-    DEFAULT_CONFIG_NAME = "cohen_all_source"
+    DEFAULT_CONFIG_NAME = "sigir2017_all_source"
 
     def _info(self) -> datasets.DatasetInfo:
-        """Returns the dataset metadata."""
 
         if self.config.schema == "source":
             features = datasets.Features(
@@ -142,40 +119,53 @@ class CohenDataset(datasets.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager) -> List[datasets.SplitGenerator]:
         """Returns SplitGenerators."""
+        data_dir = dl_manager.download_and_extract(_URLS["sigir2017"])
+        pubmed_output_dir = "/".join(self.cache_dir.split("/")[:-3])
 
-        data_dir = "/".join(self.cache_dir.split("/")[:-3])
-        prepare_dataset(output_folder=data_dir)
-
-        # Not all datasets have predefined canonical train/val/test splits.
-        # If your dataset has no predefined splits, use datasets.Split.TRAIN for all of the data.
+        input_folder = f"{data_dir}/{MAIN_REPO_FOLDER}"
+        prepare_dataset(
+            input_folder=input_folder,
+            output_folder=pubmed_output_dir,
+        )
 
         return [
             datasets.SplitGenerator(
                 name=datasets.Split.TRAIN,
-                # Whatever you put in gen_kwargs will be passed to _generate_examples
                 gen_kwargs={
-                    "filepath": os.path.join(data_dir, "train.jsonl"),
+                    "qrels_data_dir": input_folder,
+                    "docs_data_dir": pubmed_output_dir,
                     "split": "train",
                 },
             ),
         ]
 
-    def _generate_examples(self, filepath, split: str) -> Tuple[int, Dict]:
+    def _generate_examples(
+        self,
+        qrels_data_dir: str,
+        docs_data_dir: str,
+        split: str,
+    ) -> Tuple[int, Dict]:
         """Yields examples as (key, example) tuples."""
 
-        data_dir = "/".join(self.cache_dir.split("/")[:-3])
         review = "_".join(self.config.subset_id.split("_")[1:])
 
+        with open(f"{qrels_data_dir}/systematic_reviews.json") as f:
+            reviews_mapping = json.load(f)
+        cochrane_id_pattern = r"CD(\d+)"
+
+        REVIEWS = [
+            re.search(cochrane_id_pattern, r["url"]).group(0) for r in reviews_mapping
+        ]
         uid = 0
 
         if review == "all":
             df = pd.DataFrame()
             for r in REVIEWS:
-                review_df = pd.read_csv(os.path.join(data_dir, f"{r}.tsv"), sep="\t")
+                review_df = pd.read_csv(os.path.join(docs_data_dir, f"{r}.csv"))
                 review_df["Review"] = r
                 df = pd.concat([df, review_df])
         else:
-            df = pd.read_csv(os.path.join(data_dir, f"{review}.tsv"), sep="\t")
+            df = pd.read_csv(os.path.join(docs_data_dir, f"{review}.csv"))
             df["Review"] = review
 
         for key, example in df.iterrows():
@@ -183,7 +173,10 @@ class CohenDataset(datasets.GeneratorBasedBuilder):
             title = example["Title"]
             abstract = example["Abstract"]
             label = example["Label"]
-            pmid = str(example["PMID"])
+            try:
+                pmid = str(example["PMID"])
+            except:
+                pmid = "NA"  # some reviews don't have PMIDs
             uid += 1
             text = f"{title}\n\n{abstract}"
 
@@ -208,11 +201,6 @@ class CohenDataset(datasets.GeneratorBasedBuilder):
 
 
 if __name__ == "__main__":
-    x = datasets.load_dataset(__file__, name="cohen_ADHD_source")
+    x = datasets.load_dataset(__file__, name="sigir2017_all_source")
+    print(type(x))
     print(x)
-
-    y = datasets.load_dataset(__file__, name="cohen_ADHD_bigbio_text")
-    print(y)
-
-    z = datasets.load_dataset(__file__, name="cohen_all_source")
-    print(z)
