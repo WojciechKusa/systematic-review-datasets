@@ -137,11 +137,11 @@ class CsReviewsDataset(datasets.GeneratorBasedBuilder):
 
     BUILDER_CONFIGS.append(
         BigBioConfig(
-            name=f"cs_reviews_all_source",
+            name="cs_reviews_all_source",
             version=SOURCE_VERSION,
-            description=f"cs_reviews all source schema",
+            description="cs_reviews all source schema",
             schema="source",
-            subset_id=f"cs_reviews_all",
+            subset_id="cs_reviews_all",
         )
     )
 

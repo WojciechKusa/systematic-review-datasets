@@ -154,11 +154,11 @@ class Sas2010Dataset(datasets.GeneratorBasedBuilder):
 
     BUILDER_CONFIGS.append(
         BigBioConfig(
-            name=f"sas2010_all_source",
+            name="sas2010_all_source",
             version=SOURCE_VERSION,
-            description=f"sas2010 all source schema",
+            description="sas2010 all source schema",
             schema="source",
-            subset_id=f"sas2010_all",
+            subset_id="sas2010_all",
         )
     )
 
