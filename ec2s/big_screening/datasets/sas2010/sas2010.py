@@ -158,7 +158,7 @@ class Sas2010Dataset(datasets.GeneratorBasedBuilder):
             version=SOURCE_VERSION,
             description="sas2010 all source schema",
             schema="source",
-            subset_id=f"sas2010_all",
+            subset_id="sas2010_all",
         )
     )
 
