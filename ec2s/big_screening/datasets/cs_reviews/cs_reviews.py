@@ -139,7 +139,7 @@ class CsReviewsDataset(datasets.GeneratorBasedBuilder):
         BigBioConfig(
             name="cs_reviews_all_source",
             version=SOURCE_VERSION,
-            description=f"cs_reviews all source schema",
+            description="cs_reviews all source schema",
             schema="source",
             subset_id=f"cs_reviews_all",
         )
