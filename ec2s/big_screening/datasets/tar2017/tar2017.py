@@ -95,7 +95,7 @@ class Tar2017Dataset(datasets.GeneratorBasedBuilder):
             )
         )
 
-    DEFAULT_CONFIG_NAME = "tar2017_source"
+    DEFAULT_CONFIG_NAME = "tar2017_all_source"
 
     def _info(self) -> datasets.DatasetInfo:
 

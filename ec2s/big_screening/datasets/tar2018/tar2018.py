@@ -91,7 +91,7 @@ class Tar2018Dataset(datasets.GeneratorBasedBuilder):
             )
         )
 
-    DEFAULT_CONFIG_NAME = "tar2018_source"
+    DEFAULT_CONFIG_NAME = "tar2018_all_source"
 
     def _info(self) -> datasets.DatasetInfo:
 
@@ -165,7 +165,6 @@ class Tar2018Dataset(datasets.GeneratorBasedBuilder):
         )
         REVIEWS = qrels_df["review_id"].unique().tolist()
         uid = 0
-        # breakpoint()
 
         if review == "all":
             df = pd.DataFrame()
@@ -186,7 +185,6 @@ class Tar2018Dataset(datasets.GeneratorBasedBuilder):
             df = pd.read_csv(os.path.join(data_dir, f"{review}.csv"))
             df["Review"] = review
 
-        breakpoint()
         for key, example in df.iterrows():
             review_name = str(example["Review"])
             title = str(example["Title"])
