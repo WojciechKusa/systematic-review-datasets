@@ -141,7 +141,7 @@ class CsReviewsDataset(datasets.GeneratorBasedBuilder):
             version=SOURCE_VERSION,
             description="cs_reviews all source schema",
             schema="source",
-            subset_id=f"cs_reviews_all",
+            subset_id="cs_reviews_all",
         )
     )
 
