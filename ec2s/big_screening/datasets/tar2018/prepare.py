@@ -54,23 +54,23 @@ def get_from_pubmed(df) -> pd.DataFrame:
 def prepare_dataset(
     input_folder: str,
     output_folder: str,
+    train_qrels: str,
+    test_qrels: str,
 ) -> None:
     if is_prepared(output_folder):
         return
 
-    train_qrels = "tar-master/2018-TAR/Task2/Training/qrels/full.train.abs.2018.qrels"
-    test_qrels = "tar-master/2018-TAR/Task2/Testing/qrels/full.test.abs.2018.qrels"
     qrels_df = pd.concat(
         [
             pd.read_csv(
                 f"{input_folder}/{train_qrels}",
-                sep="\t",
+                sep="\s+",
                 header=None,
                 names=["review_id", "0", "PMID", "Label"],
             ),
             pd.read_csv(
                 f"{input_folder}/{test_qrels}",
-                sep="\t",
+                sep="\s+",
                 header=None,
                 names=["review_id", "0", "PMID", "Label"],
             ),
