@@ -226,13 +226,13 @@ def gen_latex(dataset_name, helper, splits, schemas, fig_path):
     tasks = ", ".join(tasks)
     schemas = " ".join([r"{\tt "] + list(schemas) + ["}"])  # TODO \tt
     splits = ", ".join(list(splits))
-    data_name_display = " ".join(data_name.split("_"))
+    data_name_display = " ".join(dataset_name.split("_")).title()
     latex_bod = (
         r"\clearpage"
         + "\n"
         + r"\section*{"
         + rf"{data_name_display}"
-        + " Data Card"
+        + " datasheet"
         + r"}"
         + "\n"
     )
@@ -245,7 +245,7 @@ def gen_latex(dataset_name, helper, splits, schemas, fig_path):
     )
     latex_bod += f"{fig_path}" + r"}" + "\n"
     latex_bod += r"\caption{\label{fig:"
-    latex_bod += rf"{data_name}" + r"}"
+    latex_bod += rf"{dataset_name}" + r"}"
     latex_bod += (
         r"Token frequency distribution by split (top) and frequency of different kind of instances (bottom).}"
         + "\n"
@@ -253,13 +253,13 @@ def gen_latex(dataset_name, helper, splits, schemas, fig_path):
     latex_bod += r"\end{figure}" + "\n" + r"\textbf{Dataset Description} "
     latex_bod += (
         rf"{descriptions}"
-        + "\n"
+        + "\n\n"
         + r"\textbf{Homepage:} "
         + f"{helper.homepage}"
         + "\n\n"
         + r"\textbf{URL:} "
         + r"\url{"
-        + f"{helper.url}"
+        + f"{helper.homepage}"
         + r"}"  # TODO change this later
         + "\n\n"
         + r"\textbf{Licensing:} "
@@ -286,7 +286,7 @@ def write_latex(latex_body, latex_name):
     text_file.close()
 
 
-def draw_figure(data_name, data_config_name, schema_type):
+def draw_figure(data_name, data_config_name, schema_type, split_name: str):
     helper = conhelps.for_config_name(data_config_name)
     metadata_helper = helper.get_metadata()  # calls load_dataset for meta parsing
     rprint(metadata_helper)
@@ -419,13 +419,21 @@ if __name__ == "__main__":
             rprint(config_helper)
             bigbio_schema = config_helper.config.schema
             config_name = config_helper.config.name
-            helper, splits, fig_path = draw_figure(
-                data_name, config_name, bigbio_schema
-            )
+            split_name = config_helper.config.subset_id[len(data_name) + 1 :]
 
-            split_name = config_helper.config.subset_id[len(data_name)+1:]
+            helper, splits, fig_path = draw_figure(
+                data_name, config_name, bigbio_schema, split_name=split_name
+            )
+            latex_fig_path = f"figures/data_card/{fig_path.split('/')[-1]}"
+
             schemas.add(helper.bigbio_schema_caps)
-            latex_bod = gen_latex(data_name, helper, splits, schemas, fig_path)
+            latex_bod = gen_latex(
+                dataset_name=config_helper.config.subset_id,
+                helper=helper,
+                splits=splits,
+                schemas=schemas,
+                fig_path=latex_fig_path,
+            )
             latex_name = f"{data_name}_{config_name}.tex"
             write_latex(latex_bod, latex_name)
             print(latex_bod)
