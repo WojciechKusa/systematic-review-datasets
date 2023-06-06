@@ -20,7 +20,7 @@ import pandas as pd
 
 from ec2s.big_screening.loader.bigbiohub import BigBioConfig
 from ec2s.big_screening.loader.bigbiohub import Tasks
-from ec2s.big_screening.loader.bigbiohub import text_features
+from ec2s.big_screening.loader.bigbiohub import text_features, entailment_features
 
 _LANGUAGES = ["English"]
 _PUBMED = True
@@ -41,7 +41,7 @@ _LICENSE = ""
 
 _URLS = {"livsb_ft": "../../../../data/LivSB/LivSB-FT.zip"}
 
-_SUPPORTED_TASKS = [Tasks.TEXT_CLASSIFICATION, Tasks.QUESTION_ANSWERING]
+_SUPPORTED_TASKS = [Tasks.TEXT_CLASSIFICATION, Tasks.TEXTUAL_ENTAILMENT]
 
 _SOURCE_VERSION = "1.0.0"
 _BIGBIO_VERSION = "1.0.0"
@@ -71,8 +71,17 @@ class LivsbFtDataset(datasets.GeneratorBasedBuilder):
             BigBioConfig(
                 name=f"livsb_ft_{dataset_version}_bigbio_text",
                 version=BIGBIO_VERSION,
-                description=f"livsb_ft {dataset_version} BigBio schema",
+                description=f"livsb_ft {dataset_version} BigBio classification schema",
                 schema="bigbio_text",
+                subset_id=f"livsb_ft_{dataset_version}",
+            )
+        )
+        BUILDER_CONFIGS.append(
+            BigBioConfig(
+                name=f"livsb_ft_{dataset_version}_bigbio_te",
+                version=BIGBIO_VERSION,
+                description=f"livsb_ft {dataset_version} BigBio entailment schema",
+                schema="bigbio_te",
                 subset_id=f"livsb_ft_{dataset_version}",
             )
         )
@@ -96,6 +105,8 @@ class LivsbFtDataset(datasets.GeneratorBasedBuilder):
             )
         elif self.config.schema == "bigbio_text":
             features = text_features
+        elif self.config.schema == "bigbio_te":
+            features = entailment_features
         else:
             raise ValueError(f"Unsupported schema {self.config.schema}")
 
@@ -177,6 +188,8 @@ class LivsbFtDataset(datasets.GeneratorBasedBuilder):
             review_title = reviews_metadata[example["review_id"]]["title"]
 
             text = f"{review_title}\n{review_abstract}\n{review_criteria}\n{title}\n\n{abstract}\n\n{main_text}"
+            premise = f"{review_title}\n{review_abstract}\n{review_criteria}"
+            hypothesis = f"{title}\n\n{abstract}\n\n{main_text}"
 
             uid += 1
             if self.config.schema == "source":
@@ -198,6 +211,15 @@ class LivsbFtDataset(datasets.GeneratorBasedBuilder):
                     "document_id": pmid,
                     "text": text,
                     "labels": [label],
+                }
+                yield str(uid), data
+
+            elif self.config.schema == "bigbio_te":
+                data = {
+                    "id": str(uid),
+                    "premise": premise,
+                    "hypothesis": hypothesis,
+                    "label": [label],
                 }
                 yield str(uid), data
 
