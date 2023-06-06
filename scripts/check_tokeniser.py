@@ -2,12 +2,6 @@ import pandas as pd
 import tiktoken
 from datasets import load_dataset
 
-enc = tiktoken.encoding_for_model("gpt-4")
-
-livsb_ft = load_dataset(
-    "../ec2s/big_screening/datasets/livsb_ft", name="livsb_ft_all_source"
-)
-
 
 def encode_livsb_ft(dataset):
     tokenised_dataset = []
@@ -38,8 +32,15 @@ def encode_livsb_ft(dataset):
     return tokenised_dataset
 
 
-for split in ["train", "validation", "test", "sample"]:
-    df = pd.DataFrame(encode_livsb_ft(livsb_ft[split]))
-    print(split)
-    print(df.describe())
-    print()
+if __name__ == "__main__":
+    enc = tiktoken.encoding_for_model("gpt-4")
+
+    livsb_ft = load_dataset(
+        "../ec2s/big_screening/datasets/livsb_ft", name="livsb_ft_all_source"
+    )
+
+    for split in ["train", "validation", "test", "sample"]:
+        df = pd.DataFrame(encode_livsb_ft(livsb_ft[split]))
+        print(split)
+        print(df.describe())
+        print()
