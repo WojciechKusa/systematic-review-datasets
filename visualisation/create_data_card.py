@@ -369,7 +369,7 @@ if __name__ == "__main__":
     # dc_local = load_helper(local="scripts/bigbio-public-metadatas-6-8.json")
     # each entry is the config
     conhelps = load_helper()
-    dc = list()
+    dc = []
     # TODO uncomment this
     # for conhelper in conhelps:
     #     # print(f"{conhelper.dataset_name}-{conhelper.config.subset_id}-{conhelper.config.schema}")
