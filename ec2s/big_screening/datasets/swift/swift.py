@@ -186,7 +186,7 @@ class SwiftDataset(datasets.GeneratorBasedBuilder):
             label = example["Label"]
             try:
                 pmid = str(example["PMID"])
-            except ValueError:
+            except (ValueError, KeyError):
                 pmid = "NA"  # some reviews don't have PMIDs
             uid += 1
             text = f"{title}\n\n{abstract}"
