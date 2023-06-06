@@ -95,7 +95,8 @@ class LivsbFtDataset(datasets.GeneratorBasedBuilder):
                 {
                     "review_id": datasets.Value("string"),
                     "review_title": datasets.Value("string"),
-                    "review_criteria": [datasets.Value("string")],
+                    "review_abstract": datasets.Value("string"),
+                    "review_criteria": datasets.Value("string"),
                     "pmid": datasets.Value("string"),
                     "title": datasets.Value("string"),
                     "abstract": datasets.Value("string"),
@@ -196,6 +197,7 @@ class LivsbFtDataset(datasets.GeneratorBasedBuilder):
                 data = {
                     "review_id": example["review_id"],
                     "review_title": review_title,
+                    "review_abstract": review_abstract,
                     "review_criteria": review_criteria,
                     "pmid": pmid,
                     "title": title,
