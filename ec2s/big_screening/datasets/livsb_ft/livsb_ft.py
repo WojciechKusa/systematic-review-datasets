@@ -144,13 +144,13 @@ class LivsbFtDataset(datasets.GeneratorBasedBuilder):
                     "split": "test",
                 },
             ),
-            # datasets.SplitGenerator(
-            #     name="SAMPLE",
-            #     gen_kwargs={
-            #         "data_dir": data_dir,
-            #         "split": "train",
-            #     },
-            # ),
+            datasets.SplitGenerator(
+                name="sample",
+                gen_kwargs={
+                    "data_dir": data_dir,
+                    "split": "sample",
+                },
+            ),
         ]
 
     def _generate_examples(
