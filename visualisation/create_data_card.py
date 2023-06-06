@@ -281,7 +281,7 @@ def gen_latex(dataset_name, helper, splits, schemas, fig_path):
 
 
 def write_latex(latex_body, latex_name):
-    text_file = open(f"{tex_path}/{latex_name}", "w")
+    text_file = open(f"{tex_path}/{latex_name}", "w", encoding="utf_8")
     text_file.write(latex_body)
     text_file.close()
 
