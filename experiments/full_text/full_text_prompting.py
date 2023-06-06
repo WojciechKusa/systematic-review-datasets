@@ -54,7 +54,7 @@ if __name__ == "__main__":
     models = {"gpt-4-0314": 8000, "gpt-3.5-turbo-0301": 4000}
 
     livsb_ft = load_dataset(
-        "../ec2s/big_screening/datasets/livsb_ft", name="livsb_ft_all_source"
+        "../../ec2s/big_screening/datasets/livsb_ft", name="livsb_ft_all_source"
     )
 
     model_name = "gpt-3.5-turbo-0301"
