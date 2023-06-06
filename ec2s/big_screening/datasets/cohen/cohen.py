@@ -65,8 +65,6 @@ _URLS = {
     }
 }
 
-CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config.json")
-
 _SUPPORTED_TASKS = [Tasks.TEXT_CLASSIFICATION]
 
 _SOURCE_VERSION = "1.0.0"

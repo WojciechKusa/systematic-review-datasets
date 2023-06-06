@@ -66,8 +66,6 @@ _URLS = {
     }
 }
 
-CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config.json")
-
 _SUPPORTED_TASKS = [Tasks.TEXT_CLASSIFICATION]
 
 _SOURCE_VERSION = "1.0.0"
@@ -188,7 +186,7 @@ class SwiftDataset(datasets.GeneratorBasedBuilder):
             label = example["Label"]
             try:
                 pmid = str(example["PMID"])
-            except:
+            except (ValueError, KeyError):
                 pmid = "NA"  # some reviews don't have PMIDs
             uid += 1
             text = f"{title}\n\n{abstract}"

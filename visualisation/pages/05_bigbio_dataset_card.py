@@ -7,10 +7,10 @@ import streamlit as st
 from datasets import load_dataset
 from matplotlib import pyplot as plt
 from matplotlib_venn import venn2, venn3
-from visualisation.ngram import get_tuples_manual_sentences
 from rich import print as rprint
 
 from ec2s.big_screening.dataloader import BigBioConfigHelpers
+from visualisation.ngram import get_tuples_manual_sentences
 
 
 # vanilla tokenizer
@@ -259,7 +259,7 @@ if __name__ == "__main__":
                 ngram_counter_sets,
                 dataset.keys(),
                 set_colors=IBM_COLORS[:3],
-                subset_label_formatter=lambda x: f"{(x/total):1.0%}",
+                subset_label_formatter=lambda x: f"{(x / total):1.0%}",
             )
         else:
             union_counter = ngram_counters[0] + ngram_counters[1] + ngram_counters[2]
@@ -271,7 +271,7 @@ if __name__ == "__main__":
                 ngram_counter_sets,
                 dataset.keys(),
                 set_colors=IBM_COLORS[:4],
-                subset_label_formatter=lambda x: f"{(x/total):1.0%}",
+                subset_label_formatter=lambda x: f"{(x / total):1.0%}",
             )
         if len(ngram_counters) != 1:
             venn_fig.suptitle(f"{N}-gram intersection for {data_name}", fontsize=20)
