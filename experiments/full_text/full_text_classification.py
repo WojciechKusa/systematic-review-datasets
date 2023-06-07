@@ -10,8 +10,6 @@ from transformers import AutoModelForSequenceClassification
 from transformers import AutoTokenizer
 from transformers import TrainingArguments, Trainer
 
-wandb.init(project="full_text_classification")
-
 
 def compute_metrics(eval_pred):
     metric1 = evaluate.load("precision")
@@ -56,7 +54,7 @@ def tokenize_function(examples):
 
 
 if __name__ == "__main__":
-    outpath = "../data/processed/prompting/"
+    outpath = "../../data/processed/prompting/"
 
     if not os.path.exists(outpath):
         os.makedirs(outpath)
@@ -65,12 +63,38 @@ if __name__ == "__main__":
         "allenai/longformer-base-4096": 4096,
         "yikuan8/Clinical-BigBird": 4096,
         "yikuan8/Clinical-Longformer": 4096,
+        # "google/bigbird-pegasus-large-pubmed": 4096,
+        "google/bigbird-roberta-base": 4096,
     }
+
+    per_device_train_batch_size = 1
+    per_device_eval_batch_size = 1
+    gradient_accumulation_steps = 8
+    learning_rate = 1e-5
+    weight_decay = 0.01
+    adam_beta1 = 0.9
+    num_train_epochs = 4
 
     dataset = load_dataset(
         "../../ec2s/big_screening/datasets/livsb_ft", name="livsb_ft_all_source"
     )
     for model_name, context_size in models.items():
+        wandb.init(
+            project="full_text_classification",
+            name=f"{model_name}_{learning_rate}_{weight_decay}",
+            config={
+                "model_name": model_name,
+                "context_size": context_size,
+                "per_device_train_batch_size": per_device_train_batch_size,
+                "per_device_eval_batch_size": per_device_eval_batch_size,
+                "gradient_accumulation_steps": gradient_accumulation_steps,
+                "learning_rate": learning_rate,
+                "weight_decay": weight_decay,
+                "adam_beta1": adam_beta1,
+                "num_train_epochs": num_train_epochs,
+            },
+        )
+
         print(f"Using model {model_name}, context size {context_size}")
 
         review_splitter = TokenTextSplitter(
@@ -83,17 +107,22 @@ if __name__ == "__main__":
             model_name, num_labels=2
         )
         tokenizer = AutoTokenizer.from_pretrained(model_name)
+        wandb.watch(model)
 
         tokenized_datasets = dataset.map(tokenize_function, batched=True)
 
         training_args = TrainingArguments(
             output_dir="test_trainer",
             evaluation_strategy="epoch",
-            per_device_train_batch_size=1,
-            per_device_eval_batch_size=1,
-            gradient_accumulation_steps=8,
-            learning_rate=5e-5,
-            num_train_epochs=20,
+            per_device_train_batch_size=wandb.config.per_device_train_batch_size,
+            per_device_eval_batch_size=wandb.config.per_device_eval_batch_size,
+            gradient_accumulation_steps=wandb.config.gradient_accumulation_steps,
+            learning_rate=wandb.config.learning_rate,
+            weight_decay=wandb.config.weight_decay,
+            adam_beta1=wandb.config.adam_beta1,
+            num_train_epochs=wandb.config.num_train_epochs,
+            report_to=["wandb"],
+            logging_steps=1,
         )
 
         trainer = Trainer(
@@ -116,4 +145,5 @@ if __name__ == "__main__":
             # save predictions
             print(predictions)
             with open(f"{'_'.join(model_name.split('/'))}_{test_data}.json", "w") as fp:
-                json.dump(predictions, fp)
+                json.dump(predictions.predictions.tolist(), fp)
+        wandb.finish()

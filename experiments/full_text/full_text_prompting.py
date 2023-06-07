@@ -8,21 +8,10 @@ from datasets import load_dataset
 from langchain.text_splitter import TokenTextSplitter
 from tqdm import tqdm
 
-API_KEY_FILE = "../config/openai_key.txt"
+API_KEY_FILE = "../../config/openai_key.txt"
 with open(API_KEY_FILE, "r", encoding="utf-8") as f:
     api_key = f.read().strip()
 openai.api_key = api_key
-
-
-def take_only_n_words(text, n):
-    return " ".join(text.split(" ")[:n])
-
-
-def split_paper_into_chunks(paper, chunk_size):
-    chunks = []
-    for i in range(0, len(paper), chunk_size):
-        chunks.append(paper[i : i + chunk_size])
-    return chunks
 
 
 def parse_response(response, example, uuid: int, paper_chunk_id: int) -> dict[str, str]:
@@ -46,7 +35,7 @@ def parse_response(response, example, uuid: int, paper_chunk_id: int) -> dict[st
 
 
 if __name__ == "__main__":
-    outpath = "../data/processed/prompting/"
+    outpath = "../../data/processed/prompting/"
 
     if not os.path.exists(outpath):
         os.makedirs(outpath)
@@ -68,6 +57,11 @@ if __name__ == "__main__":
     enc = tiktoken.encoding_for_model(model_name)
 
     dataset = livsb_ft["sample"]
+
+    task_description = (
+        "Does the following scientific paper fulfill all eligibility criteria and should it be included in the systematic review? "
+        "Answer 'Included' or 'Excluded'."
+    )
 
     predictions = []
     for index_i, example in tqdm(enumerate(dataset), total=len(dataset)):
@@ -98,10 +92,6 @@ if __name__ == "__main__":
         paper_splits = paper_splitter.split_text(paper)
         print(f"Splitting paper into {len(paper_splits)} chunks")
 
-        task_description = (
-            "Does the following scientific paper fulfill all eligibility criteria and should it be included in the systematic review? "
-            "Answer 'Included' or 'Excluded'."
-        )
         for paper_chunk_id, paper in enumerate(paper_splits):
             prompt = (
                 task_description
@@ -114,7 +104,17 @@ if __name__ == "__main__":
             )
             print(len(enc.encode(prompt)))
 
-            if model_name == "gpt-4-0314":
+            if model_name == "gpt-3.5-turbo-0301":
+                response = openai.ChatCompletion.create(
+                    model=model_name,
+                    messages=[
+                        {
+                            "role": "user",
+                            "content": prompt,
+                        },
+                    ],
+                )
+            elif model_name == "gpt-4-0314":
                 while True:
                     try:
                         response = openai.ChatCompletion.create(
@@ -131,17 +131,6 @@ if __name__ == "__main__":
                         print(e)
                         print("Sleeping for 30 seconds")
                         sleep(30)
-                        continue
-            elif model_name == "gpt-3.5-turbo-0301":
-                response = openai.ChatCompletion.create(
-                    model=model_name,
-                    messages=[
-                        {
-                            "role": "user",
-                            "content": prompt,
-                        },
-                    ],
-                )
             else:
                 raise ValueError(f"Unknown model {model_name}")
 
