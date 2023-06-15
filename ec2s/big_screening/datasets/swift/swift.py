@@ -18,10 +18,15 @@ from typing import List, Tuple, Dict
 import datasets
 import pandas as pd
 
-from ec2s.big_screening.datasets.swift.prepare import prepare_dataset, REVIEWS
 from ec2s.big_screening.loader.bigbiohub import BigBioConfig
 from ec2s.big_screening.loader.bigbiohub import Tasks
 from ec2s.big_screening.loader.bigbiohub import text_features
+from ec2s.big_screening.utils import (
+    get_from_pubmed,
+    is_prepared,
+    save_checksum,
+    mark_all_files_prepared,
+)
 
 _LANGUAGES = ["English"]
 _PUBMED = True
@@ -72,6 +77,75 @@ _SOURCE_VERSION = "1.0.0"
 _BIGBIO_VERSION = "1.0.0"
 
 _CLASS_NAMES = ["included", "excluded"]
+
+
+def prepare_fluoride_dataset(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    :param df: input dataframe containing Fluoride dataset
+    """
+    labels_column: str = "Label"
+    df["Title"] = df["Title"].fillna("")
+    df["Abstract"] = df["Abstract"].fillna("")
+
+    df[labels_column] = 1
+    df.loc[df["Included"] == "EXCLUDED", labels_column] = 0
+
+    return df
+
+
+def prepare_neuropathic_pain_dataset(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    :param df: input dataframe containing NeuropathicPain dataset
+    """
+    labels_column: str = "Label"
+    df["Title"] = df["Title"].fillna("")
+    df["Abstract"] = df["Abstract"].fillna("")
+
+    df["tmp_label"] = df["Label"]
+    df[labels_column] = 1
+    df.loc[df["tmp_label"] == "Excluded", labels_column] = 0
+
+    return df
+
+
+reviews_version = {
+    "Neuropain": prepare_neuropathic_pain_dataset,
+    "Fluoride": prepare_fluoride_dataset,
+    "BPA": get_from_pubmed,
+    "Transgenerational": get_from_pubmed,
+    "PFOS-PFOA": get_from_pubmed,
+}
+file_to_review_mapping = {
+    "ohat": [
+        "BPA",
+        "Transgenerational",
+        "PFOS-PFOA",
+        "Fluoride",
+    ],
+    "camrades": ["Neuropain"],
+}
+REVIEWS = [x.split(".")[0] for x in reviews_version.keys()]
+
+
+def prepare_dataset(
+    input_files: dict[str, str],
+    output_folder: str,
+) -> None:
+    if is_prepared(output_folder):
+        return
+
+    print("PubMed data is being downloaded. This may take a while for the first time.")
+    for file_name, input_file in input_files.items():
+        for review in file_to_review_mapping[file_name]:
+            df = pd.read_excel(input_file, sheet_name=review)
+            print(f"Processing {review}, {len(df)=}")
+            df = reviews_version[review](df)
+            df.to_csv(f"{output_folder}/{review}.csv", index=False)
+            save_checksum(
+                file=f"{output_folder}/{review}.csv", dataset_directory=output_folder
+            )
+
+    mark_all_files_prepared(output_folder)
 
 
 class SwiftDataset(datasets.GeneratorBasedBuilder):
