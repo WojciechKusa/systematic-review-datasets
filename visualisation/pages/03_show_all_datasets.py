@@ -78,7 +78,7 @@ st.dataframe(stats_df)
 
 with st.expander("Review overlap"):
     review_counts = {}
-    for collection in collections:
+    for collection in sorted(collections):
         for review in collections[collection]:
             if review["review_id"] not in review_counts:
                 review_counts[review["review_id"]] = []
@@ -91,6 +91,19 @@ with st.expander("Review overlap"):
         if len(review_counts[review]) > 1:
             st.write(review, review_counts[review])
             overlapping_reviews.append(review)
+
+overlapping_reviews_df = []
+for review in overlapping_reviews:
+
+    overlapping_reviews_df.append(
+        {
+            "review_id": review,
+            "first_collection": review_counts[review][0],
+            "other_collections": ", ".join(review_counts[review][1:]),
+        }
+    )
+overlapping_reviews_df = pd.DataFrame(overlapping_reviews_df)
+st.dataframe(overlapping_reviews_df)
 
 st.write(f"Total number of overlapping reviews: {len(overlapping_reviews)}")
 
