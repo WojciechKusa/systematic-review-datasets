@@ -120,7 +120,7 @@ class SrUpdatesDataset(datasets.GeneratorBasedBuilder):
             version=SOURCE_VERSION,
             description="srupdates all source schema",
             schema="source",
-            subset_id=f"srupdates_all",
+            subset_id="srupdates_all",
         )
     )
 
