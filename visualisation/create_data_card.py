@@ -1,29 +1,25 @@
 import json
+import os
+from collections import Counter
 
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
-import plotly.io as pio
 from datasets import load_dataset
 from plotly.subplots import make_subplots
 from rich import print as rprint
 
-from collections import Counter
-
+from ec2s.big_screening.dataloader import BigBioConfigHelpers
 from visualisation.ngram import get_tuples_manual_sentences
 
-from ec2s.big_screening.dataloader import BigBioConfigHelpers
-import sys
-
 # pio.kaleido.scope.mathjax = None
-
-import os
 
 figures_path = os.path.join(os.path.dirname(__file__), "../reports/data_cards/figures/")
 tex_path = os.path.join(os.path.dirname(__file__), "../reports/data_cards/tex/")
 for path in [figures_path, tex_path]:
     if not os.path.exists(path):
         os.makedirs(path)
+
 
 # vanilla tokenizer
 def tokenizer(text, counter):

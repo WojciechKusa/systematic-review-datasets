@@ -14,6 +14,8 @@ def set_entrez_email() -> None:
         with open(entrez_email_file, "r", encoding="utf-8") as f:
             user_email = f.read().strip()
         Entrez.email = user_email
+    elif os.environ.get("ENTREZ_EMAIL"):
+        Entrez.email = os.environ.get("ENTREZ_EMAIL")
     else:
         raise ValueError("Please provide an email address for Entrez API")
 
