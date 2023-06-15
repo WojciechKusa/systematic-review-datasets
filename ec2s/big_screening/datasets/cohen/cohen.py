@@ -57,7 +57,7 @@ Here is the data used in our research on automated classification of document ci
 """
 
 _HOMEPAGE = "https://dmice.ohsu.edu/cohenaa/systematic-drug-class-review-data.html"
-_LICENSE = ""
+_LICENSE = "Unknown"
 
 _URLS = {
     _DATASETNAME: {

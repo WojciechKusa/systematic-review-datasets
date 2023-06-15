@@ -47,7 +47,7 @@ Dataset containing a collection of queries for the paper "A Test Collection for 
 """
 
 _HOMEPAGE = "https://github.com/ielab/SIGIR2017-SysRev-Collection"
-_LICENSE = ""
+_LICENSE = "Unknown"
 
 _URLS = {
     "sigir2017": "https://github.com/ielab/SIGIR2017-SysRev-Collection/archive/refs/heads/master.zip",

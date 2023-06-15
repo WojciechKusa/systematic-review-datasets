@@ -47,7 +47,7 @@ Three clinical systematic reviews
 """
 
 _HOMEPAGE = "https://github.com/bwallace/citation-screening/"
-_LICENSE = ""
+_LICENSE = "Unknown"
 
 _URLS = {
     "sas2010": "https://github.com/bwallace/citation-screening/archive/refs/heads/master.zip",

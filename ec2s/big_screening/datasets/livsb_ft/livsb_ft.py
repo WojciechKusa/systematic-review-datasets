@@ -37,7 +37,7 @@ Systematic Review dataset focused on full-text screening.
 """
 
 _HOMEPAGE = "https://github.com/WojciechKusa/systematic-review-datasets"
-_LICENSE = ""
+_LICENSE = "CC BY 4.0"
 
 _URLS = {"livsb_ft": "../../../../data/LivSB/LivSB-FT.zip"}
 

@@ -46,7 +46,7 @@ Seven systematic reviews from the computer science domain.
 """
 
 _HOMEPAGE = "https://github.com/hannousse/Semantic-Scholar-Evaluation/"
-_LICENSE = ""
+_LICENSE = "Unknown"
 
 _URLS = {
     "reviews_content": "https://github.com/hannousse/Semantic-Scholar-Evaluation/archive/refs/heads/master.zip",
