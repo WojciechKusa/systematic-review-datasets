@@ -116,7 +116,7 @@ class SrUpdatesDataset(datasets.GeneratorBasedBuilder):
 
     BUILDER_CONFIGS.append(
         BigBioConfig(
-            name=f"srupdates_all_source",
+            name="srupdates_all_source",
             version=SOURCE_VERSION,
             description=f"srupdates all source schema",
             schema="source",
