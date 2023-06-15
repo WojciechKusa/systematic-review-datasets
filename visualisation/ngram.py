@@ -1,23 +1,20 @@
 # partially from https://gist.github.com/gaulinmp/da5825de975ed0ea6a24186434c24fe4
-from nltk.util import ngrams
-from nltk.corpus import stopwords
-import spacy
-import pandas as pd
 import re
-from itertools import chain
 from collections import Counter
-from datasets import load_dataset
+from itertools import chain
 
+import spacy
+from nltk.util import ngrams
 
 nlp = spacy.load("en_core_web_sm")
 nlp.add_pipe("sentencizer")
 STOPWORDS = nlp.Defaults.stop_words
 
 N = 5
-re_sent_ends_naive = re.compile(r'[.\n]')
-re_stripper_naive = re.compile('[^a-zA-Z\.\n]')
+re_sent_ends_naive = re.compile(r"[.\n]")
+re_stripper_naive = re.compile("[^a-zA-Z\.\n]")
 
-splitter_naive = lambda x: re_sent_ends_naive.split(re_stripper_naive.sub(' ', x))
+splitter_naive = lambda x: re_sent_ends_naive.split(re_stripper_naive.sub(" ", x))
 
 
 # list of tokens for one sentence
@@ -52,7 +49,7 @@ def get_tuples_manual_sentences(txt, N):
 def count_by_split(split_data):
     c = Counter()
     for entry in split_data:
-        text = entry['text']
+        text = entry["text"]
         sents, tup = get_tuples_manual_sentences(text, N)
         tup = ["_".join(ta) for ta in tup]
         c.update(tup)

@@ -93,7 +93,7 @@ class SrUpdatesDataset(datasets.GeneratorBasedBuilder):
     BIGBIO_VERSION = datasets.Version(_BIGBIO_VERSION)
 
     BUILDER_CONFIGS = []
-    dataset_versions = ["all"]
+    dataset_versions = REVIEWS
     for dataset_version in dataset_versions:
         BUILDER_CONFIGS.append(
             BigBioConfig(
@@ -113,6 +113,16 @@ class SrUpdatesDataset(datasets.GeneratorBasedBuilder):
                 subset_id=f"srupdates_{dataset_version}",
             )
         )
+
+    BUILDER_CONFIGS.append(
+        BigBioConfig(
+            name="srupdates_all_source",
+            version=SOURCE_VERSION,
+            description="srupdates all source schema",
+            schema="source",
+            subset_id="srupdates_all",
+        )
+    )
 
     DEFAULT_CONFIG_NAME = "srupdates_all_source"
 
