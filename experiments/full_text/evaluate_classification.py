@@ -30,12 +30,11 @@ for split in ["sample", "test"]:
             predictions = json.load(f)
 
         dataset = livsb_ft[split]
-        y_pred = []
-        for pred in predictions:
-            y_pred.append(np.argmax(pred))
+        y_pred = [np.argmax(pred) for pred in predictions]
         y_true = dataset["label"]
 
         results[model_name] = get_evaluation(y_true, y_pred)
+        print(f"Results for {model_name} on {split}, {sum(y_pred)} positive")
 
     print(f"Results for {split}")
     print(pd.DataFrame(results).T.round(3))
