@@ -118,7 +118,7 @@ class SrUpdatesDataset(datasets.GeneratorBasedBuilder):
         BigBioConfig(
             name="srupdates_all_source",
             version=SOURCE_VERSION,
-            description=f"srupdates all source schema",
+            description="srupdates all source schema",
             schema="source",
             subset_id=f"srupdates_all",
         )
