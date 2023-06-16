@@ -1,6 +1,7 @@
 import pandas as pd
 import tiktoken
 from datasets import load_dataset
+from langchain.text_splitter import TokenTextSplitter
 
 
 def encode_livsb_ft(dataset):
@@ -39,8 +40,38 @@ if __name__ == "__main__":
         "../ec2s/big_screening/datasets/livsb_ft", name="livsb_ft_all_source"
     )
 
+    max_review_size = 2048
+    review_splitter = TokenTextSplitter(
+        chunk_size=max_review_size,
+        chunk_overlap=0,
+        model_name="gpt-3.5-turbo-0301",
+    )
+
+    tokeniser_stats = {}
     for split in ["train", "validation", "test", "sample"]:
-        df = pd.DataFrame(encode_livsb_ft(livsb_ft[split]))
-        print(split)
-        print(df.describe())
-        print()
+        reviews = []
+        for example in livsb_ft[split]:
+            review = f'{example["review_title"]} {example["review_criteria"]}'
+            review = review_splitter.split_text(review)
+            reviews.append(review)
+
+        tokeniser_stats[split] = {
+            "avg_chunks": sum(len(review) for review in reviews) / len(reviews),
+            "median_chunks": sorted(len(review) for review in reviews)[
+                len(reviews) // 2
+            ],
+            "max_chunks": max(len(review) for review in reviews),
+            "min_chunks": min(len(review) for review in reviews),
+            "%_more_than_1_chunk": sum(len(review) > 1 for review in reviews)
+            / len(reviews),
+        }
+    df = pd.DataFrame(tokeniser_stats)
+    print(df)
+
+    print(
+        df.to_latex(
+            float_format="{:0.2f}".format,
+            column_format="l" * len(df.columns),
+            header=False,
+        ).replace("_", " ")
+    )

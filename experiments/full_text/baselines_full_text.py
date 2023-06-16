@@ -7,7 +7,7 @@ from tqdm import tqdm
 from experiments.full_text.analyse_results import get_evaluation
 
 data_path = "../data/LivSB/LivSB-FT/"
-datasets = [x for x in os.listdir(data_path) if x.endswith('.csv')]
+datasets = [x for x in os.listdir(data_path) if x.endswith(".csv")]
 
 random_states = list(range(1, 101))
 
@@ -24,9 +24,9 @@ for dataset in datasets:
     df = pd.read_csv(f"{data_path}/{dataset}")
     print(f"Dataset: {dataset}")
     print(f"Number of documents: {len(df)}")
-    Y = df['decision']
-    Y = Y.replace({'included': 1, 'excluded': 0})
-    X = df['main_text']
+    Y = df["decision"]
+    Y = Y.replace({"included": 1, "excluded": 0})
+    X = df["main_text"]
     for name, clf in classifiers.items():
         if name in ["stratified", "uniform"]:
             averaged_results = {}

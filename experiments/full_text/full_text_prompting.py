@@ -40,14 +40,17 @@ if __name__ == "__main__":
     if not os.path.exists(outpath):
         os.makedirs(outpath)
 
-    models = {"gpt-4-0314": 8000, "gpt-3.5-turbo-0301": 4000}
+    models = {
+        "gpt-4-0314": 8000,
+        "gpt-3.5-turbo-0301": 4000,
+        "gpt-3.5-turbo-16k": 16000,
+    }
 
     livsb_ft = load_dataset(
         "../../ec2s/big_screening/datasets/livsb_ft", name="livsb_ft_all_source"
     )
 
-    model_name = "gpt-3.5-turbo-0301"
-    # model_name = "gpt-4-0314"
+    model_name = "gpt-3.5-turbo-16k"
     context_size = models[model_name]
     review_splitter = TokenTextSplitter(
         chunk_size=context_size // 2, chunk_overlap=0, model_name=model_name
@@ -103,36 +106,22 @@ if __name__ == "__main__":
                 + "Answer: "
             )
             print(len(enc.encode(prompt)))
-
-            if model_name == "gpt-3.5-turbo-0301":
-                response = openai.ChatCompletion.create(
-                    model=model_name,
-                    messages=[
-                        {
-                            "role": "user",
-                            "content": prompt,
-                        },
-                    ],
-                )
-            elif model_name == "gpt-4-0314":
-                while True:
-                    try:
-                        response = openai.ChatCompletion.create(
-                            model=model_name,
-                            messages=[
-                                {
-                                    "role": "user",
-                                    "content": prompt,
-                                },
-                            ],
-                        )
-                        break
-                    except Exception as e:
-                        print(e)
-                        print("Sleeping for 30 seconds")
-                        sleep(30)
-            else:
-                raise ValueError(f"Unknown model {model_name}")
+            while True:
+                try:
+                    response = openai.ChatCompletion.create(
+                        model=model_name,
+                        messages=[
+                            {
+                                "role": "user",
+                                "content": prompt,
+                            },
+                        ],
+                    )
+                    break
+                except Exception as e:
+                    print(e)
+                    print("Sleeping for 30 seconds")
+                    sleep(30)
 
             answer = parse_response(
                 response, example=example, uuid=index_i, paper_chunk_id=paper_chunk_id
