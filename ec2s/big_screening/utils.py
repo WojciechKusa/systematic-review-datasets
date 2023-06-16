@@ -122,7 +122,7 @@ def fetch_pubmed_abstracts(
         time.sleep(delay)
         # dump to JSON
         with open(outfname, "wt", encoding="utf_8") as file:
-            file.write(json.dumps(record, indent=2))
+            json.dump(record, file, indent=2)
 
 
 def get_from_pubmed(
