@@ -14,16 +14,19 @@
 # limitations under the License.
 import os
 from typing import List, Tuple, Dict
-import importlib
 
 import datasets
 import pandas as pd
 
-from ec2s.big_screening.loader.bigbiohub import text_features
 from ec2s.big_screening.loader.bigbiohub import BigBioConfig
 from ec2s.big_screening.loader.bigbiohub import Tasks
-from ec2s.big_screening.datasets.tar2017.prepare import prepare_dataset
-
+from ec2s.big_screening.loader.bigbiohub import text_features
+from ec2s.big_screening.utils import (
+    is_prepared,
+    save_checksum,
+    mark_all_files_prepared,
+    get_from_pubmed,
+)
 
 _LANGUAGES = ["English"]
 _PUBMED = True
@@ -63,8 +66,35 @@ _SUPPORTED_TASKS = [Tasks.TEXT_CLASSIFICATION]
 _SOURCE_VERSION = "1.0.0"
 _BIGBIO_VERSION = "1.0.0"
 
-
 _CLASS_NAMES = ["included", "excluded"]
+
+
+def prepare_dataset(
+    input_folder: str,
+    output_folder: str,
+) -> None:
+    if is_prepared(output_folder):
+        return
+
+    qrels_df = pd.read_csv(
+        f"{input_folder}/tar-master/2017-TAR/all/all.qrels",
+        sep="\t",
+        header=None,
+        names=["review_id", "0", "PMID", "Label"],
+    )
+
+    print("PubMed data is being downloaded. This may take a while for the first time.")
+    for review_id in qrels_df["review_id"].unique():
+        review_df = qrels_df[qrels_df["review_id"] == review_id]
+        print(f"{review_id=}, {len(review_df)=}")
+        review_df = get_from_pubmed(review_df)
+        review_df.to_csv(f"{output_folder}/{review_id}.csv", index=False)
+        print(f"Prepared review size: {len(review_df)}")
+        save_checksum(
+            file=f"{output_folder}/{review_id}.csv", dataset_directory=output_folder
+        )
+
+    mark_all_files_prepared(output_folder)
 
 
 class Tar2017Dataset(datasets.GeneratorBasedBuilder):
