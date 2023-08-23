@@ -1,5 +1,6 @@
 import os
 from time import sleep
+import time
 
 import openai
 import pandas as pd
@@ -59,12 +60,14 @@ if __name__ == "__main__":
     print(f"Using model {model_name}")
     enc = tiktoken.encoding_for_model(model_name)
 
-    dataset = livsb_ft["sample"]
+    dataset_subset = "test"
+    dataset = livsb_ft[dataset_subset]
 
     task_description = (
         "Does the following scientific paper fulfill all eligibility criteria and should it be included in the systematic review? "
         "Answer 'Included' or 'Excluded'."
     )
+    start_time = time.time()
 
     predictions = []
     for index_i, example in tqdm(enumerate(dataset), total=len(dataset)):
@@ -129,4 +132,8 @@ if __name__ == "__main__":
             predictions.append(answer)
 
             df = pd.DataFrame(predictions)
-            df.to_csv(f"{outpath}/predictions_{model_name}.csv", index=False)
+            df.to_csv(f"{outpath}/{dataset_subset}_predictions_{model_name}.csv", index=False)
+
+        end_time = time.time()
+        print(f"Finished in {(end_time - start_time) / 60} minutes")
+        print(f"Examples per second: {len(dataset) / (end_time - start_time)}")
