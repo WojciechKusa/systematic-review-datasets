@@ -14,8 +14,8 @@ from sklearn.metrics import (
 def get_evaluation(y_true, y_pred):
     return {
         "acc": accuracy_score(y_true, y_pred),
-        "prec": precision_score(y_true, y_pred),
-        "recall": recall_score(y_true, y_pred),
+        "prec": precision_score(y_true, y_pred, average="macro"),
+        "recall": recall_score(y_true, y_pred, average="macro"),
         "f1": f1_score(y_true, y_pred, average="binary"),
         "f1-macro": f1_score(y_true, y_pred, average="macro"),
         "f1-micro": f1_score(y_true, y_pred, average="micro"),
@@ -46,7 +46,7 @@ def merge_predictions(df):
 
 if __name__ == "__main__":
 
-    results_path = "../data/processed/prompting/"
+    results_path = "../../data/processed/prompting/"
 
     model_predictions = [x for x in os.listdir(results_path) if x.endswith(".csv")]
     results = {}
@@ -57,8 +57,9 @@ if __name__ == "__main__":
         Y_true = df["gold_label"]
         Y_pred = df["prediction"]
         print(f"{model_name}, {len(df)} predictions")
+        print(f"Number of included records: {sum(Y_true)}, {sum(Y_pred)}")
         print(
-            f"there are {len(set(list(Y_true) + list(Y_pred)))} different labels in the dataset"
+            f"there are {len(set(list(Y_true) + list(Y_pred)))} different labels in the dataset\n"
         )
         results["_".join(model_name.split("_")[1:])] = get_evaluation(Y_true, Y_pred)
 

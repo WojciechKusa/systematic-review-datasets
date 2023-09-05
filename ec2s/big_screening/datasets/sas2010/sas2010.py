@@ -47,7 +47,7 @@ Three clinical systematic reviews
 """
 
 _HOMEPAGE = "https://github.com/bwallace/citation-screening/"
-_LICENSE = ""
+_LICENSE = "Unknown"
 
 _URLS = {
     "sas2010": "https://github.com/bwallace/citation-screening/archive/refs/heads/master.zip",
@@ -92,7 +92,7 @@ def prepare_clinical_dataset(
     title_dir = f"{in_path}/Titles/"
 
     dataset = {}
-    with open(labels_file, encoding='utf-8') as fp:
+    with open(labels_file, encoding="utf-8") as fp:
         for content in fp.readlines():
             paper = {}
             doc_id, label = content.split(" ")[:2]
@@ -109,10 +109,10 @@ def prepare_clinical_dataset(
             and abstract_file in dataset
         ):
             doc_id = abstract_file.split("/")[-1]
-            with open(f"{abstract_dir}/{abstract_file}", encoding='utf-8') as fp:
+            with open(f"{abstract_dir}/{abstract_file}", encoding="utf-8") as fp:
                 abstract = fp.readline()
 
-            with open(f"{title_dir}/{abstract_file}", encoding='utf-8') as fp:
+            with open(f"{title_dir}/{abstract_file}", encoding="utf-8") as fp:
                 title = fp.readline()
 
             dataset[doc_id]["Title"] = f"{title.lower()}. {abstract.lower()}"

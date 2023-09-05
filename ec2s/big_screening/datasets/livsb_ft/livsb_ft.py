@@ -20,7 +20,11 @@ import pandas as pd
 
 from ec2s.big_screening.loader.bigbiohub import BigBioConfig
 from ec2s.big_screening.loader.bigbiohub import Tasks
-from ec2s.big_screening.loader.bigbiohub import text_features, entailment_features
+from ec2s.big_screening.loader.bigbiohub import (
+    text_features,
+    entailment_features,
+    pairs_features,
+)
 
 _LANGUAGES = ["English"]
 _PUBMED = True
@@ -37,7 +41,7 @@ Systematic Review dataset focused on full-text screening.
 """
 
 _HOMEPAGE = "https://github.com/WojciechKusa/systematic-review-datasets"
-_LICENSE = ""
+_LICENSE = "CC BY-SA 4.0"
 
 _URLS = {"livsb_ft": "../../../../data/LivSB/LivSB-FT.zip"}
 
@@ -85,6 +89,15 @@ class LivsbFtDataset(datasets.GeneratorBasedBuilder):
                 subset_id=f"livsb_ft_{dataset_version}",
             )
         )
+        BUILDER_CONFIGS.append(
+            BigBioConfig(
+                name=f"livsb_ft_{dataset_version}_bigbio_pairs",
+                version=BIGBIO_VERSION,
+                description=f"livsb_ft {dataset_version} BigBio text pairs classification schema",
+                schema="bigbio_pairs",
+                subset_id=f"livsb_ft_{dataset_version}",
+            )
+        )
 
     DEFAULT_CONFIG_NAME = "livsb_ft_all_source"
 
@@ -108,6 +121,8 @@ class LivsbFtDataset(datasets.GeneratorBasedBuilder):
             features = text_features
         elif self.config.schema == "bigbio_te":
             features = entailment_features
+        elif self.config.schema == "bigbio_pairs":
+            features = pairs_features
         else:
             raise ValueError(f"Unsupported schema {self.config.schema}")
 
@@ -224,6 +239,17 @@ class LivsbFtDataset(datasets.GeneratorBasedBuilder):
                     "label": [label],
                 }
                 yield str(uid), data
+            elif self.config.schema == "bigbio_pairs":
+                data = {
+                    "id": str(uid),
+                    "document_id": f"{example['review_id']}_{pmid}",  # combine review_id and pmid
+                    "text_1": premise,
+                    "text_2": hypothesis,
+                    "label": [label],
+                }
+                yield str(uid), data
+            else:
+                raise ValueError(f"Unsupported schema {self.config.schema}")
 
 
 if __name__ == "__main__":

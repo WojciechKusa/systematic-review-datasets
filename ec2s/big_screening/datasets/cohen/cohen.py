@@ -12,17 +12,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import copy
 import os
 from typing import List, Tuple, Dict
 
 import datasets
 import pandas as pd
 
-from ec2s.big_screening.datasets.cohen.prepare import prepare_dataset, REVIEWS
 from ec2s.big_screening.loader.bigbiohub import BigBioConfig
 from ec2s.big_screening.loader.bigbiohub import Tasks
 from ec2s.big_screening.loader.bigbiohub import text_features
+from ec2s.big_screening.utils import (
+    is_prepared,
+    get_from_pubmed,
+    save_checksum,
+    mark_all_files_prepared,
+)
 
 _LANGUAGES = ["English"]
 _PUBMED = True
@@ -57,7 +62,7 @@ Here is the data used in our research on automated classification of document ci
 """
 
 _HOMEPAGE = "https://dmice.ohsu.edu/cohenaa/systematic-drug-class-review-data.html"
-_LICENSE = ""
+_LICENSE = "Unknown"
 
 _URLS = {
     _DATASETNAME: {
@@ -71,6 +76,77 @@ _SOURCE_VERSION = "1.0.0"
 _BIGBIO_VERSION = "1.0.0"
 
 _CLASS_NAMES = ["included", "excluded"]
+
+DATA_URL = "https://dmice.ohsu.edu/cohenaa/epc-ir-data/epc-ir.clean.tsv"
+REVIEWS = (
+    pd.read_csv(
+        DATA_URL,
+        sep="\t",
+        names=[
+            "Drug review topic",
+            "EndNote ID",
+            "PubMed ID",
+            "Abstract Triage Status",
+            "Article Triage Status",
+        ],
+    )["Drug review topic"]
+    .unique()
+    .tolist()
+)
+
+
+def prepare_dataset(
+    output_folder: str,
+) -> None:
+    if is_prepared(output_folder):
+        return
+
+    labels_column: str = "Label"
+    pubmed_id_column: str = "PubMed ID"
+
+    df = pd.read_csv(
+        DATA_URL,
+        sep="\t",
+        names=[
+            "Drug review topic",
+            "EndNote ID",
+            "PubMed ID",
+            "Abstract Triage Status",
+            "Article Triage Status",
+        ],
+    )
+
+    for review in df["Drug review topic"].unique().tolist():
+        review_df = copy.copy(df[df["Drug review topic"] == review])
+        print(f"{review=}, {len(review_df)=}")
+
+        review_df[labels_column] = 0
+        review_df.loc[review_df["Article Triage Status"] == "I", labels_column] = 1
+
+        review_df = get_from_pubmed(
+            df=review_df, pubmed_id_column=pubmed_id_column, labels_column=labels_column
+        )
+        # pubmed_id_list = review_df[pubmed_id_column].tolist()
+        # handle = Entrez.efetch(
+        #     db="pubmed", id=pubmed_id_list, rettype="medline", retmode="text"
+        # )
+        # articles = Medline.parse(handle)
+        #
+        # docs = []
+        # for article in articles:
+        #     docs.append(article)
+        # output_df = pd.DataFrame(docs)
+        # output_df = output_df.rename(columns={"TI": "Title", "AB": "Abstract"})
+        #
+        # output_df[labels_column] = review_df[
+        #     review_df["PubMed ID"].isin(output_df["PMID"].astype(int).tolist())
+        # ][labels_column].tolist()
+
+        outfile = f"{output_folder}/{review.strip()}.tsv"
+        review_df.to_csv(outfile, sep="\t", index=False)
+        save_checksum(file=outfile, dataset_directory=output_folder)
+
+    mark_all_files_prepared(dataset_directory=output_folder)
 
 
 class CohenDataset(datasets.GeneratorBasedBuilder):
@@ -146,13 +222,9 @@ class CohenDataset(datasets.GeneratorBasedBuilder):
         data_dir = "/".join(self.cache_dir.split("/")[:-3])
         prepare_dataset(output_folder=data_dir)
 
-        # Not all datasets have predefined canonical train/val/test splits.
-        # If your dataset has no predefined splits, use datasets.Split.TRAIN for all of the data.
-
         return [
             datasets.SplitGenerator(
                 name=datasets.Split.TRAIN,
-                # Whatever you put in gen_kwargs will be passed to _generate_examples
                 gen_kwargs={
                     "filepath": os.path.join(data_dir, "train.jsonl"),
                     "split": "train",

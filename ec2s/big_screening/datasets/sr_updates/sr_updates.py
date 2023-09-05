@@ -44,7 +44,7 @@ Systematic Review Update Dataset - a dataset created to evaluate the retrieval p
 """
 
 _HOMEPAGE = "https://github.com/Amal-Alharbi/Systematic_Reviews_Update"
-_LICENSE = ""
+_LICENSE = "Unknown"
 
 _URLS = {
     "srupdates": "https://raw.githubusercontent.com/Amal-Alharbi/Systematic_Reviews_Update/master/update_dataset.pkl.zip",

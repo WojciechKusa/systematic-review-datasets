@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import copy
 import json
 import os
 import re
@@ -20,10 +21,16 @@ from typing import List, Tuple, Dict
 import datasets
 import pandas as pd
 
-from ec2s.big_screening.datasets.sigir2017.prepare import prepare_dataset
 from ec2s.big_screening.loader.bigbiohub import BigBioConfig
 from ec2s.big_screening.loader.bigbiohub import Tasks
 from ec2s.big_screening.loader.bigbiohub import text_features
+from ec2s.big_screening.utils import (
+    is_prepared,
+    temporal_search_pubmed,
+    get_from_pubmed,
+    save_checksum,
+    mark_all_files_prepared,
+)
 
 _LANGUAGES = ["English"]
 _PUBMED = True
@@ -47,7 +54,7 @@ Dataset containing a collection of queries for the paper "A Test Collection for 
 """
 
 _HOMEPAGE = "https://github.com/ielab/SIGIR2017-SysRev-Collection"
-_LICENSE = ""
+_LICENSE = "Unknown"
 
 _URLS = {
     "sigir2017": "https://github.com/ielab/SIGIR2017-SysRev-Collection/archive/refs/heads/master.zip",
@@ -204,3 +211,76 @@ if __name__ == "__main__":
     x = datasets.load_dataset(__file__, name="sigir2017_all_source")
     print(type(x))
     print(x)
+cochrane_id_pattern = r"CD(\d+)"
+
+
+def prepare_dataset(input_folder: str, output_folder: str) -> None:
+    if is_prepared(output_folder):
+        print("PubMed data is already prepared.")
+        return
+
+    qrels_df = pd.read_csv(
+        f"{input_folder}/sigir2017.qrels",
+        sep="\s+",
+        header=None,
+        names=["review_id", "0", "PMID", "Label"],
+    )
+    with open(f"{input_folder}/queries_unannotated.json") as f:
+        queries = json.load(f)
+    with open(f"{input_folder}/systematic_reviews.json") as f:
+        reviews_mapping = json.load(f)
+
+    print("PubMed data is being downloaded. This may take a while for the first time.")
+    for review_id in qrels_df["review_id"].unique():  # review_ids are just numbers
+
+        review_url = [r["url"] for r in reviews_mapping if r["id"] == review_id][0]
+        match = re.search(cochrane_id_pattern, review_url)
+        if match:
+            cochrane_id = match.group(0)
+        else:
+            raise ValueError("Review ID not found")
+
+        query = [q for q in queries if q["document_id"] == review_id]
+        if len(query) > 0:
+            n_found, id_list = temporal_search_pubmed(
+                query[0]["query"], query[0]["start_date"], query[0]["end_date"]
+            )
+        else:
+            n_found = 0
+            id_list = []
+
+        review_df = copy.copy(qrels_df[qrels_df["review_id"] == review_id])
+        print(f"{cochrane_id=}, {len(review_df)=}, {len(id_list)=}")
+        if len(id_list) > 0:
+            review_df = pd.concat(
+                [
+                    review_df,
+                    pd.DataFrame(
+                        {
+                            "review_id": review_id,
+                            "0": 0,
+                            "PMID": id_list,
+                            "Label": 0,
+                        }
+                    ),
+                ],
+                ignore_index=True,
+            )
+        review_df["PMID"] = review_df["PMID"].astype(int)
+        review_df = review_df.drop_duplicates(subset=["PMID"])
+
+        review_df = get_from_pubmed(review_df)
+
+        review_df["review_id"] = cochrane_id
+        review_df["Label"] = review_df["Label"].apply(
+            lambda x: 0 if x in [0, 1, 3] else 1
+        )
+
+        review_df.to_csv(f"{output_folder}/{cochrane_id}.csv", index=False)
+        print(f"Prepared review size: {len(review_df)}")
+        save_checksum(
+            file=f"{output_folder}/{cochrane_id}.csv",
+            dataset_directory=output_folder,
+        )
+
+    mark_all_files_prepared(output_folder)
