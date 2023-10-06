@@ -33,8 +33,8 @@ _LOCAL = False
 _CITATION = """\
 """
 
-_DATASETNAME = "livsb_ft"
-_DISPLAYNAME = "livsb_ft"
+_DATASETNAME = "csmed_ft"
+_DISPLAYNAME = "csmed_ft"
 
 _DESCRIPTION = """\
 Systematic Review dataset focused on full-text screening. 
@@ -43,7 +43,7 @@ Systematic Review dataset focused on full-text screening.
 _HOMEPAGE = "https://github.com/WojciechKusa/systematic-review-datasets"
 _LICENSE = "CC BY-SA 4.0"
 
-_URLS = {"livsb_ft": "../../../../data/LivSB/LivSB-FT.zip"}
+_URLS = {"csmed_ft": "../../../../data/CSMeD/CSMeD-FT.zip"}
 
 _SUPPORTED_TASKS = [Tasks.TEXT_CLASSIFICATION, Tasks.TEXTUAL_ENTAILMENT]
 
@@ -53,7 +53,7 @@ _BIGBIO_VERSION = "1.0.0"
 _CLASS_NAMES = ["included", "excluded"]
 
 
-class LivsbFtDataset(datasets.GeneratorBasedBuilder):
+class CsmedFtDataset(datasets.GeneratorBasedBuilder):
     """Systematic Review dataset focused on full-text screening."""
 
     SOURCE_VERSION = datasets.Version(_SOURCE_VERSION)
@@ -64,42 +64,42 @@ class LivsbFtDataset(datasets.GeneratorBasedBuilder):
     for dataset_version in dataset_versions:
         BUILDER_CONFIGS.append(
             BigBioConfig(
-                name=f"livsb_ft_{dataset_version}_source",
+                name=f"csmed_ft_{dataset_version}_source",
                 version=SOURCE_VERSION,
-                description=f"livsb_ft {dataset_version} source schema",
+                description=f"csmed_ft {dataset_version} source schema",
                 schema="source",
-                subset_id=f"livsb_ft_{dataset_version}",
+                subset_id=f"csmed_ft_{dataset_version}",
             )
         )
         BUILDER_CONFIGS.append(
             BigBioConfig(
-                name=f"livsb_ft_{dataset_version}_bigbio_text",
+                name=f"csmed_ft_{dataset_version}_bigbio_text",
                 version=BIGBIO_VERSION,
-                description=f"livsb_ft {dataset_version} BigBio classification schema",
+                description=f"csmed_ft {dataset_version} BigBio classification schema",
                 schema="bigbio_text",
-                subset_id=f"livsb_ft_{dataset_version}",
+                subset_id=f"csmed_ft_{dataset_version}",
             )
         )
         BUILDER_CONFIGS.append(
             BigBioConfig(
-                name=f"livsb_ft_{dataset_version}_bigbio_te",
+                name=f"csmed_ft_{dataset_version}_bigbio_te",
                 version=BIGBIO_VERSION,
-                description=f"livsb_ft {dataset_version} BigBio entailment schema",
+                description=f"csmed_ft {dataset_version} BigBio entailment schema",
                 schema="bigbio_te",
-                subset_id=f"livsb_ft_{dataset_version}",
+                subset_id=f"csmed_ft_{dataset_version}",
             )
         )
         BUILDER_CONFIGS.append(
             BigBioConfig(
-                name=f"livsb_ft_{dataset_version}_bigbio_pairs",
+                name=f"csmed_ft_{dataset_version}_bigbio_pairs",
                 version=BIGBIO_VERSION,
-                description=f"livsb_ft {dataset_version} BigBio text pairs classification schema",
+                description=f"csmed_ft {dataset_version} BigBio text pairs classification schema",
                 schema="bigbio_pairs",
-                subset_id=f"livsb_ft_{dataset_version}",
+                subset_id=f"csmed_ft_{dataset_version}",
             )
         )
 
-    DEFAULT_CONFIG_NAME = "livsb_ft_all_source"
+    DEFAULT_CONFIG_NAME = "csmed_ft_all_source"
 
     def _info(self) -> datasets.DatasetInfo:
 
@@ -136,7 +136,7 @@ class LivsbFtDataset(datasets.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager) -> List[datasets.SplitGenerator]:
         """Returns SplitGenerators."""
-        data_dir = dl_manager.download_and_extract(_URLS["livsb_ft"])
+        data_dir = dl_manager.download_and_extract(_URLS["csmed_ft"])
 
         return [
             datasets.SplitGenerator(
@@ -176,8 +176,8 @@ class LivsbFtDataset(datasets.GeneratorBasedBuilder):
     ) -> Tuple[int, Dict]:
         """Yields examples as (key, example) tuples."""
 
-        documents_file = f"{data_dir}/LivSB-FT/LivSB-FT-{split}.csv"
-        review_file = f"{data_dir}/LivSB-FT/LivSB-FT-{split}_reviews_metadata.json"
+        documents_file = f"{data_dir}/CSMeD-FT/CSMeD-FT-{split}.csv"
+        review_file = f"{data_dir}/CSMeD-FT/CSMeD-FT-{split}_reviews_metadata.json"
 
         df = pd.read_csv(documents_file)
         with open(review_file, "r") as f:
@@ -253,6 +253,6 @@ class LivsbFtDataset(datasets.GeneratorBasedBuilder):
 
 
 if __name__ == "__main__":
-    x = datasets.load_dataset(__file__, name="livsb_ft_all_source")
+    x = datasets.load_dataset(__file__, name="csmed_ft_all_source")
     print(type(x))
     print(x)
