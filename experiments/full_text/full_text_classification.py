@@ -92,7 +92,7 @@ if __name__ == "__main__":
     num_train_epochs = 10
 
     dataset = load_dataset(
-        "../../ec2s/big_screening/datasets/livsb_ft", name="livsb_ft_all_source"
+        "../../ec2s/big_screening/datasets/csmed_ft", name="csmed_ft_all_source"
     )
     for learning_rate in [5e-5, 2e-5, 1e-5, 1e-6, 1e-7]:
         for model_name, context_size in models.items():

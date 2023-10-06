@@ -7,8 +7,8 @@ from datasets import load_dataset
 
 from experiments.full_text.analyse_results import get_evaluation
 
-livsb_ft = load_dataset(
-    "../../ec2s/big_screening/datasets/livsb_ft", name="livsb_ft_all_source"
+csmed_ft = load_dataset(
+    "../../ec2s/big_screening/datasets/csmed_ft", name="csmed_ft_all_source"
 )
 
 for split in ["sample", "test"]:
@@ -29,7 +29,7 @@ for split in ["sample", "test"]:
         with open(predictions_file, "r") as f:
             predictions = json.load(f)
 
-        dataset = livsb_ft[split]
+        dataset = csmed_ft[split]
         y_pred = [np.argmax(pred) for pred in predictions]
         y_true = dataset["label"]
 
