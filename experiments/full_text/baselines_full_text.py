@@ -6,7 +6,7 @@ from tqdm import tqdm
 
 from experiments.full_text.analyse_results import get_evaluation
 
-data_path = "../data/LivSB/LivSB-FT/"
+data_path = "../data/CSMeD/CSMeD-FT/"
 datasets = [x for x in os.listdir(data_path) if x.endswith(".csv")]
 
 random_states = list(range(1, 101))
