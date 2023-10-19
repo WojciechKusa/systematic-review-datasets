@@ -4,7 +4,7 @@ from datasets import load_dataset
 from langchain.text_splitter import TokenTextSplitter
 
 
-def encode_livsb_ft(dataset):
+def encode_csmed_ft(dataset):
     tokenised_dataset = []
     for example in dataset:
         review = (
@@ -36,8 +36,8 @@ def encode_livsb_ft(dataset):
 if __name__ == "__main__":
     enc = tiktoken.encoding_for_model("gpt-4")
 
-    livsb_ft = load_dataset(
-        "../ec2s/big_screening/datasets/livsb_ft", name="livsb_ft_all_source"
+    csmed_ft = load_dataset(
+        "../ec2s/big_screening/datasets/csmed_ft", name="csmed_ft_all_source"
     )
 
     max_review_size = 2048
@@ -50,7 +50,7 @@ if __name__ == "__main__":
     tokeniser_stats = {}
     for split in ["train", "validation", "test", "sample"]:
         reviews = []
-        for example in livsb_ft[split]:
+        for example in csmed_ft[split]:
             review = f'{example["review_title"]} {example["review_criteria"]}'
             review = review_splitter.split_text(review)
             reviews.append(review)

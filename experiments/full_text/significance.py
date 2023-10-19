@@ -19,8 +19,8 @@ def mcnemar_test(table):
 classification_results_folder = "results/"
 prompting_results_folder = "../../data/processed/prompting/"
 
-livsb_ft = load_dataset(
-    "../../ec2s/big_screening/datasets/livsb_ft", name="livsb_ft_all_source"
+csmed_ft = load_dataset(
+    "../../ec2s/big_screening/datasets/csmed_ft", name="csmed_ft_all_source"
 )
 
 
@@ -71,7 +71,7 @@ def contingency_table(pred_1, pred_2, gold):
 if __name__ == "__main__":
 
     for split in ["sample", "test"]:
-        dataset = livsb_ft[split]
+        dataset = csmed_ft[split]
         y_true = dataset["label"]
 
         combined_predictions = {}

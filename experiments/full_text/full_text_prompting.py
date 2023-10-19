@@ -47,8 +47,8 @@ if __name__ == "__main__":
         "gpt-3.5-turbo-16k": 16000,
     }
 
-    livsb_ft = load_dataset(
-        "../../ec2s/big_screening/datasets/livsb_ft", name="livsb_ft_all_source"
+    csmed_ft = load_dataset(
+        "../../ec2s/big_screening/datasets/csmed_ft", name="csmed_ft_all_source"
     )
 
     model_name = "gpt-3.5-turbo-16k"
@@ -61,7 +61,7 @@ if __name__ == "__main__":
     enc = tiktoken.encoding_for_model(model_name)
 
     dataset_subset = "test"
-    dataset = livsb_ft[dataset_subset]
+    dataset = csmed_ft[dataset_subset]
 
     task_description = (
         "Does the following scientific paper fulfill all eligibility criteria and should it be included in the systematic review? "

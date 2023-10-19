@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 import json
 import plotly.express as px
 
-data_path = "data/LivSB/"
+data_path = "data/CSMeD/"
 
 
 def elem_to_text(elem, default=""):
@@ -35,9 +35,10 @@ fig = px.histogram(df, x="review_id", color="decision", barmode="group")
 st.plotly_chart(fig)
 
 papers = {}
-if dataset == "LivSB-FT-train.csv":
+#todo
+if dataset == "CSMeD-FT-train.csv":
     ft_path = "data/external/sigir2017/"
-elif dataset == "LivSB-FT-dev.csv":
+elif dataset == "CSMeD-FT-dev.csv":
     ft_path = "data/external/ec2s/"
 else:
     ft_path = "data/external/pcs/"
@@ -137,16 +138,16 @@ fig = px.histogram(
 )
 st.plotly_chart(fig)
 
-if not os.path.exists(f"{data_path}/LivSB-FT"):
-    os.makedirs(f"{data_path}/LivSB-FT")
+if not os.path.exists(f"{data_path}/CSMeD-FT"):
+    os.makedirs(f"{data_path}/CSMeD-FT")
 
 st.write("Mean word count in main text: ", papers_df["main_text_word_count"].mean())
 st.write("Mean word in paper title+abstract+main text: ", (papers_df["title_word_count"] + papers_df["abstract_word_count"] + papers_df["main_text_word_count"]).mean())
-papers_df.to_csv(f"{data_path}/LivSB-FT/{dataset}", index=False)
+papers_df.to_csv(f"{data_path}/CSMeD-FT/{dataset}", index=False)
 
 
 reviews_metadata_df = pd.DataFrame.from_dict(reviews_metadata, orient="index")
-with open(f"{data_path}/LivSB-FT/{dataset[:-4]}_reviews_metadata.json", "w") as f:
+with open(f"{data_path}/CSMeD-FT/{dataset[:-4]}_reviews_metadata.json", "w") as f:
     json.dump(reviews_metadata, f, indent=4)
 
 # count length of "abstract", "title" and "criteria" columns
@@ -194,6 +195,4 @@ fig = px.histogram(
 st.plotly_chart(fig)
 
 st.write("Mean word count in main text: ", combined_df["word_count"].mean())
-
-
 

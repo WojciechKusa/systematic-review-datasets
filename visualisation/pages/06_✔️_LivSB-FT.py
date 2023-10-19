@@ -4,15 +4,15 @@ import zipfile
 import pandas as pd
 import streamlit as st
 
-data_path = os.path.join(os.path.dirname(__file__), "../../data/LivSB/LivSB-FT/")
+data_path = os.path.join(os.path.dirname(__file__), "../../data/CSMeD/CSMeD-FT/")
 
 if not os.path.exists(data_path):
     st.write("Data not available. Unzipping data...")
 
     with zipfile.ZipFile(
-        os.path.join(os.path.dirname(__file__), "../../data/LivSB/LivSB-FT.zip"), "r"
+        os.path.join(os.path.dirname(__file__), "../../data/CSMeD/CSMeD-FT.zip"), "r"
     ) as zip_ref:
-        zip_ref.extractall(os.path.join(os.path.dirname(__file__), "../../data/LivSB/"))
+        zip_ref.extractall(os.path.join(os.path.dirname(__file__), "../../data/CSMeD/"))
 
     st.write("Done unzipping data.")
 
