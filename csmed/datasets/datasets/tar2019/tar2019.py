@@ -61,6 +61,121 @@ _BIGBIO_VERSION = "1.0.0"
 
 _CLASS_NAMES = ["included", "excluded"]
 
+REVIEWS = [
+    "CD012567",
+    "CD008081",
+    "CD010653",
+    "CD002143",
+    "CD011145",
+    "CD010239",
+    "CD011549",
+    "CD001261",
+    "CD009925",
+    "CD010633",
+    "CD012551",
+    "CD009185",
+    "CD008803",
+    "CD011571",
+    "CD010864",
+    "CD011380",
+    "CD008054",
+    "CD008892",
+    "CD012930",
+    "CD011926",
+    "CD009323",
+    "CD011787",
+    "CD009519",
+    "CD010296",
+    "CD011975",
+    "CD011515",
+    "CD011140",
+    "CD012216",
+    "CD012083",
+    "CD010386",
+    "CD008587",
+    "CD005253",
+    "CD009694",
+    "CD012281",
+    "CD012009",
+    "CD012455",
+    "CD009642",
+    "CD012669",
+    "CD011420",
+    "CD010705",
+    "CD012233",
+    # "CD012668",
+    "CD012661",
+    "CD005139",
+    "CD010276",
+    "CD010542",
+    "CD012521",
+    "CD008874",
+    "CD006715",
+    "CD010019",
+    "CD012120",
+    "CD010213",
+    "CD007868",
+    "CD008686",
+    "CD012347",
+    "CD007867",
+    "CD011768",
+    "CD009551",
+    "CD009135",
+    "CD010438",
+    "CD012165",
+    "CD011977",
+    "CD009372",
+    "CD010409",
+    "CD009944",
+    "CD010657",
+    "CD009579",
+    "CD011912",
+    "CD012599",
+    "CD012164",
+    "CD009786",
+    "CD010038",
+    "CD012768",
+    "CD007427",
+    "CD011126",
+    "CD011602",
+    "CD012080",
+    "CD011053",
+    "CD009263",
+    "CD009069",
+    "CD012223",
+    "CD010526",
+    "CD011436",
+    "CD011431",
+    "CD010173",
+    "CD012019",
+    "CD010778",
+    "CD007394",
+    "CD012010",
+    "CD010339",
+    "CD011686",
+    "CD008760",
+    "CD010753",
+    "CD009044",
+    "CD006468",
+    "CD010355",
+    "CD008759",
+    "CD009647",
+    "CD010558",
+    "CD000996",
+    "CD009020",
+    "CD010502",
+    "CD012069",
+    "CD010680",
+    "CD011558",
+    "CD008018",
+    "CD009591",
+    "CD004414",
+    "CD012179",
+    "CD012342",
+    "CD011134",
+    "CD010023",
+]
+
 
 def prepare_dataset(
     input_folder: str, output_folder: str, dataset_splits: dict[str, dict[str, str]]
@@ -102,7 +217,7 @@ class Tar2019Dataset(datasets.GeneratorBasedBuilder):
     BIGBIO_VERSION = datasets.Version(_BIGBIO_VERSION)
 
     BUILDER_CONFIGS = []
-    dataset_versions = ["all"]
+    dataset_versions = REVIEWS
     for dataset_version in dataset_versions:
         BUILDER_CONFIGS.append(
             BigBioConfig(
@@ -123,10 +238,18 @@ class Tar2019Dataset(datasets.GeneratorBasedBuilder):
             )
         )
 
+    BUILDER_CONFIGS.append(
+        BigBioConfig(
+            name=f"tar2019_all_source",
+            version=SOURCE_VERSION,
+            description=f"tar2019 all source schema",
+            schema="source",
+            subset_id=f"tar2019_all",
+        )
+    )
     DEFAULT_CONFIG_NAME = "tar2019_all_source"
 
     def _info(self) -> datasets.DatasetInfo:
-
         if self.config.schema == "source":
             features = datasets.Features(
                 {
@@ -173,27 +296,40 @@ class Tar2019Dataset(datasets.GeneratorBasedBuilder):
             output_folder=pubmed_output_dir,
             dataset_splits=dataset_splits,
         )
-
-        return [
-            datasets.SplitGenerator(
-                name=datasets.Split.TRAIN,
-                gen_kwargs={
-                    "qrels_data_dir": data_dir,
-                    "docs_data_dir": pubmed_output_dir,
-                    "qrels_dict": dataset_splits["Training"],
-                    "split": "train",
-                },
-            ),
-            datasets.SplitGenerator(
-                name=datasets.Split.TEST,
-                gen_kwargs={
-                    "qrels_data_dir": data_dir,
-                    "docs_data_dir": pubmed_output_dir,
-                    "qrels_dict": dataset_splits["Testing"],
-                    "split": "test",
-                },
-            ),
-        ]
+        dataset_version = self.config.subset_id.split("_")[1]
+        if dataset_version == "all":
+            return [
+                datasets.SplitGenerator(
+                    name=datasets.Split.TRAIN,
+                    gen_kwargs={
+                        "qrels_data_dir": data_dir,
+                        "docs_data_dir": pubmed_output_dir,
+                        "qrels_dict": dataset_splits["Training"],
+                        "split": "train",
+                    },
+                ),
+                datasets.SplitGenerator(
+                    name=datasets.Split.TEST,
+                    gen_kwargs={
+                        "qrels_data_dir": data_dir,
+                        "docs_data_dir": pubmed_output_dir,
+                        "qrels_dict": dataset_splits["Testing"],
+                        "split": "test",
+                    },
+                ),
+            ]
+        else:
+            return [
+                datasets.SplitGenerator(
+                    name=datasets.Split.TRAIN,
+                    gen_kwargs={
+                        "qrels_data_dir": data_dir,
+                        "docs_data_dir": pubmed_output_dir,
+                        "qrels_dict": dataset_splits["Training"],
+                        "split": "train",
+                    },
+                )
+            ]
 
     def _generate_examples(
         self,

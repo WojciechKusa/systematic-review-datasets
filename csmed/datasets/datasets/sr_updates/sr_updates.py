@@ -97,37 +97,36 @@ class SrUpdatesDataset(datasets.GeneratorBasedBuilder):
     for dataset_version in dataset_versions:
         BUILDER_CONFIGS.append(
             BigBioConfig(
-                name=f"srupdates_{dataset_version}_source",
+                name=f"sr_updates_{dataset_version}_source",
                 version=SOURCE_VERSION,
                 description=f"srupdates {dataset_version} source schema",
                 schema="source",
-                subset_id=f"srupdates_{dataset_version}",
+                subset_id=f"sr_updates_{dataset_version}",
             )
         )
         BUILDER_CONFIGS.append(
             BigBioConfig(
-                name=f"srupdates_{dataset_version}_bigbio_text",
+                name=f"sr_updates_{dataset_version}_bigbio_text",
                 version=BIGBIO_VERSION,
                 description=f"srupdates {dataset_version} BigBio schema",
                 schema="bigbio_text",
-                subset_id=f"srupdates_{dataset_version}",
+                subset_id=f"sr_updates_{dataset_version}",
             )
         )
 
     BUILDER_CONFIGS.append(
         BigBioConfig(
-            name="srupdates_all_source",
+            name="sr_updates_all_source",
             version=SOURCE_VERSION,
             description="srupdates all source schema",
             schema="source",
-            subset_id="srupdates_all",
+            subset_id="sr_updates_all",
         )
     )
 
-    DEFAULT_CONFIG_NAME = "srupdates_all_source"
+    DEFAULT_CONFIG_NAME = "sr_updates_all_source"
 
     def _info(self) -> datasets.DatasetInfo:
-
         if self.config.schema == "source":
             features = datasets.Features(
                 {
@@ -176,7 +175,7 @@ class SrUpdatesDataset(datasets.GeneratorBasedBuilder):
     ) -> Tuple[int, Dict]:
         """Yields examples as (key, example) tuples."""
 
-        review = "_".join(self.config.subset_id.split("_")[1:])
+        review = "_".join(self.config.subset_id.split("_")[2:])
 
         uid = 0
 
@@ -206,7 +205,6 @@ class SrUpdatesDataset(datasets.GeneratorBasedBuilder):
         df = pd.DataFrame(_examples)
 
         for key, example in df.iterrows():
-
             title = example["title"]
             abstract = example["abstract"]
             label = example["label"]
@@ -236,6 +234,6 @@ class SrUpdatesDataset(datasets.GeneratorBasedBuilder):
 
 
 if __name__ == "__main__":
-    x = datasets.load_dataset(__file__, name="srupdates_all_source")
+    x = datasets.load_dataset(__file__, name="sr_updates_all_source")
     print(type(x))
     print(x)
