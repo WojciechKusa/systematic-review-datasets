@@ -1,20 +1,15 @@
 from collections import Counter
 
 from csmed.datasets.datasets.csmed_basic.csmed_basic import CSMeDBasic
+from csmed.datasets.datasets.csmed_cochrane.csmed_cochrane import CSMeDCochrane
 
-if __name__ == "__main__":
-    RELEVANT_LABEL = "1"
 
-    csm = CSMeDBasic()
-    csmed_dataset = csm.load_dataset(
-        base_path="../../csmed/datasets/datasets/csmed_basic/"
-    )
+def print_statistics(dataset) -> None:
+    systematic_review_names = dataset.keys()
 
-    systematic_review_names = csmed_dataset.keys()
-
-    sizes = [csmed_dataset[key].num_rows["train"] for key in systematic_review_names]
+    sizes = [dataset[key]["data"].num_rows["train"] for key in systematic_review_names]
     n_relevant = [
-        Counter(x["labels"][0] for x in csmed_dataset[key]["train"])[RELEVANT_LABEL]
+        Counter(x["labels"][0] for x in dataset[key]["data"]["train"])[RELEVANT_LABEL]
         for key in systematic_review_names
     ]
 
@@ -37,7 +32,23 @@ if __name__ == "__main__":
     lengths = [
         len(doc["text"].split())
         for key in systematic_review_names
-        for doc in csmed_dataset[key]["train"]
+        for doc in dataset[key]["data"]["train"]
     ]
     avg_doc_length = sum(lengths) / len(lengths)
     print(f"average length of documents: {avg_doc_length}")
+
+
+if __name__ == "__main__":
+    RELEVANT_LABEL = "1"
+
+    csm = CSMeDBasic()
+    csmed_dataset = csm.load_dataset(
+        base_path="../../csmed/datasets/datasets/csmed_basic/"
+    )
+    print_statistics(csmed_dataset["TRAIN"])
+
+    csmed_cochrane = CSMeDCochrane().load_dataset(
+        base_path="../../csmed/datasets/datasets/csmed_cochrane/"
+    )
+    print_statistics(csmed_cochrane["TRAIN"])
+    print_statistics(csmed_cochrane["EVAL"])

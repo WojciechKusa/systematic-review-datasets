@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Union
+
 import datasets
 
 from csmed.datasets.loader.bigbiohub import Tasks
@@ -93,7 +95,9 @@ class CSMeDBasic:
     SOURCE_VERSION = datasets.Version(_SOURCE_VERSION)
     BIGBIO_VERSION = datasets.Version(_BIGBIO_VERSION)
 
-    def load_dataset(self, base_path) -> dict[str, datasets.Dataset]:
+    def load_dataset(
+        self, base_path
+    ) -> dict[str, dict[str, dict[str, Union[str, datasets.Dataset]]]]:
         """Returns a dictionary of datasets.
         The keys are the names of the reviews.
         The values are the datasets.
@@ -106,9 +110,12 @@ class CSMeDBasic:
                     path=f"{base_path}/../{dataset_name}/{dataset_name}.py",
                     name=f"{dataset_name}_{review_name}_bigbio_text",
                 )
-                csmed_basic_datasets[review_name] = _dataset
+                csmed_basic_datasets[review_name] = {
+                    "review_name": review_name,
+                    "data": _dataset,
+                }
 
-        return csmed_basic_datasets
+        return {"TRAIN": csmed_basic_datasets}
 
     def _info(self) -> datasets.DatasetInfo:
         """Returns the dataset metadata."""
@@ -125,6 +132,6 @@ class CSMeDBasic:
 
 if __name__ == "__main__":
     csm = CSMeDBasic()
-    csmed_dataset = csm.load_dataset(base_path='.')
+    csmed_dataset = csm.load_dataset(base_path=".")
     x = csmed_dataset.keys()
     print(x)
