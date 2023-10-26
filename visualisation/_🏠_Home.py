@@ -1,7 +1,7 @@
 import streamlit as st
 
 st.title(
-    "This is the visualisation for the LivSB meta-dataset. Use the sidebar for navigation."
+    "This is the visualisation for the CSMeD meta-dataset. Use the sidebar for navigation."
 )
 
 st.write(
@@ -14,7 +14,7 @@ st.write(
 )
 
 datasets_table = """
-|        | Introduced in                                                                             | # reviews | Domain           | Avg. size | Avg. ratio of included (TA) | Avg. ratio of included (FT) | Additional data | Data URL                                                                                                     | Cochrane | Publicly available | Included in **LivSB** |
+|        | Introduced in                                                                             | # reviews | Domain           | Avg. size | Avg. ratio of included (TA) | Avg. ratio of included (FT) | Additional data | Data URL                                                                                                     | Cochrane | Publicly available | Included in **CSMeD** |
 |-------:|:------------------------------------------------------------------------------------------|----------:|:-----------------|----------:|----------------------------:|----------------------------:|-----------------|--------------------------------------------------------------------------------------------------------------|----------|--------------------|-----------------------|
 |      1 | [Cohen et al. (2006)](https://doi.org/10.1197/jamia.M1929)                                |        15 | Drug             |     1,249 |                        7.7% |                           — | —               | [Web](https://dmice.ohsu.edu/cohenaa/systematic-drug-class-review-data.html)                                 | —        | ✓                  | ✓                     |
 |      2 | [Wallace et al. (2010)](https://doi.org/10.1145/1835804.1835829)                          |         3 | Clinical         |     3,456 |                        7.9% |                           — | —               | [GiitHub](https://github.com/bwallace/citation-screening)                                                    | —        | ✓                  | ✓                     |

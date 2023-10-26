@@ -1,10 +1,10 @@
-# LivSB: Living Screening Benchmark for systematic review automation
+# *CSMeD:* Citation Screening Meta-Dataset for systematic review automation evaluation
 
 ____
 
 ## Citation screening datasets
 
-|        | Introduced in                                                                             | # reviews | Domain           | Avg. size | Avg. ratio of included (TA) | Avg. ratio of included (FT) | Additional data | Data URL                                                                                                     | Cochrane | Publicly available | Included in **LivSB** |
+|        | Introduced in                                                                             | # reviews | Domain           | Avg. size | Avg. ratio of included (TA) | Avg. ratio of included (FT) | Additional data | Data URL                                                                                                     | Cochrane | Publicly available | Included in **CSMeD** |
 |-------:|:------------------------------------------------------------------------------------------|----------:|:-----------------|----------:|----------------------------:|----------------------------:|-----------------|--------------------------------------------------------------------------------------------------------------|----------|--------------------|-----------------------|
 |      1 | [Cohen et al. (2006)](https://doi.org/10.1197/jamia.M1929)                                |        15 | Drug             |     1,249 |                        7.7% |                           — | —               | [Web](https://dmice.ohsu.edu/cohenaa/systematic-drug-class-review-data.html)                                 | —        | ✓                  | ✓                     |
 |      2 | [Wallace et al. (2010)](https://doi.org/10.1145/1835804.1835829)                          |         3 | Clinical         |     3,456 |                        7.9% |                           — | —               | [GiitHub](https://github.com/bwallace/citation-screening)                                                    | —        | ✓                  | ✓                     |
@@ -19,7 +19,7 @@ ____
 |     11 | [Hannousse et al. (2022)](https://doi.org/10.1007/978-3-031-04112-9_15)                   |         7 | Computer Science |       340 |                       11.7% |                           — | Review protocol | [GitHub](https://github.com/hannousse/Semantic-Scholar-Evaluation)                                           | —        | ✓                  | ✓                     |
 |     12 | [Wang et al. (2022)](https://doi.org/10.1145/3477495.3531748)                             |        40 | Clinical         |     1,326 |                           — |                           — | Review protocol | [GitHub](https://github.com/ielab/sysrev-seed-collection)                                                    | —        | ✓                  | —                     |
 |     13 | EC2S                                                                                      |        60 | Interventions    |         — |                           — |                           — | Review protocol | [GitHub](https://github.com/WojciechKusa/systematic-review-datasets/blob/main/data/raw/ec2s_reviews.json)    | ✓        | ✓                  | ✓                     |
-| **14** | LivSB-test-2022                                                                           |        31 | Mixed            |         — |                           — |                           — | Review protocol | [GitHub](https://github.com/WojciechKusa/systematic-review-datasets/blob/main/data/raw/pcs_reviews.json)     | ✓        | ✓                  | ✓                     |
+| **14** | csmed-test-2022                                                                           |        31 | Mixed            |         — |                           — |                           — | Review protocol | [GitHub](https://github.com/WojciechKusa/systematic-review-datasets/blob/main/data/raw/pcs_reviews.json)     | ✓        | ✓                  | ✓                     |
 
 ** CLEF TAR 2019 contains 38 reviews of interventions, 8 DTA, 1 Prognosis and 2 Qualitative systematic reviews.
 
@@ -28,6 +28,19 @@ TA stands for Title + Abstract screening phase, FT for Full-text screening phase
 query. `Avg. ratio of included (TA)` describes the average ratio of included records in the TA
 phase. `Avg. ratio of included (FT)` describes the average ratio of included records in the FT phase.
 
+## CSMeD-FT: Full-text screening dataset
+
+| Dataset name     | #reviews | #docs. | #included | %included | Avg. #words in document | Avg. #words in review |
+|------------------|----------|--------|-----------|-----------|-------------------------|-----------------------|
+| CSMeD-train      | 148      | 2,053  | 904       | 44.0%     | 4,535                   | 1,493                 |
+| CSMeD-dev        | 36       | 644    | 202       | 31.4%     | 4,419                   | 1,402                 |
+| CSMeD-test       | 29       | 636    | 278       | 43.7%     | 4,957                   | 2,318                 |
+| CSMeD-test-small | 16       | 50     | 22        | 44.0%     | 5,042                   | 2,354                 |
+
+*Column '#docs' refers to the total number of documents included in the dataset and '#included' mentions number of
+included documents on the full-text step. CSMeD-test-small is a subset of
+CSMeD-test.*
+
 ## Installation
 
 ### Requirements
@@ -35,9 +48,9 @@ phase. `Avg. ratio of included (FT)` describes the average ratio of included rec
 Assuming you have `conda` installed, run:
 
 ```zsh
-$ conda create -n livsb python=3.10
-$ conda activate livsb
-(livsb)$ pip install -r requirements.txt
+$ conda create -n csmed python=3.10
+$ conda activate csmed
+(csmed)$ pip install -r requirements.txt
 ```
 
 ### Data acquisition prerequisites
@@ -55,7 +68,7 @@ Furthermore, to obtain full-text PDFs, you need to configure the following:
 If you have all the prerequisites, run:
 
 ```zsh
-(livsb)$ python confgure.py
+(csmed)$ python confgure.py
 ```
 
 And follow the prompts providing API keys, cookies, email address to use PubMed Entrez and paths to GROBID server.
@@ -67,5 +80,5 @@ Library and the email address for PubMed Entrez.
 To download the datasets, run:
 
 ```zsh
-(livsb)$ python scripts/prepare_prospective_dataset.py
+(csmed)$ python scripts/prepare_prospective_dataset.py
 ```
