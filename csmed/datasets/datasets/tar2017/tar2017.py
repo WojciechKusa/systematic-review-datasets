@@ -18,14 +18,14 @@ from typing import List, Tuple, Dict
 import datasets
 import pandas as pd
 
-from ec2s.big_screening.loader.bigbiohub import BigBioConfig
-from ec2s.big_screening.loader.bigbiohub import Tasks
-from ec2s.big_screening.loader.bigbiohub import text_features
-from ec2s.big_screening.utils import (
+from csmed.datasets.loader.bigbiohub import BigBioConfig
+from csmed.datasets.loader.bigbiohub import Tasks
+from csmed.datasets.loader.bigbiohub import text_features
+from csmed.datasets.utils import (
     is_prepared,
-    get_from_pubmed,
     save_checksum,
     mark_all_files_prepared,
+    get_from_pubmed,
 )
 
 _LANGUAGES = ["English"]
@@ -33,24 +33,25 @@ _PUBMED = True
 _LOCAL = False
 
 _CITATION = """\
-@article{Kanoulas2018CLEFOverview,
+@article{Kanoulas2017CLEFOverview,
 	author = {Kanoulas, Evangelos and Li, Dan and Azzopardi, Leif and Spijker, Rene},
 	issn = {1613-0073},
 	journal = {CEUR Workshop Proceedings},
-	keywords = {Cochrane, DTA, PubMed, TAR, active learning, benchmarking, diagnostic test accuracy, e-health, evaluation, high recall, information retrieval, relevance feedback, systematic reviews, technology assisted reviews, test collection, text classification},
-	month = {7},
-	title = {{CLEF 2018 technologically assisted reviews in empirical medicine overview}},
-	url = {https://pureportal.strath.ac.uk/en/publications/clef-2018-technologically-assisted-reviews-in-empirical-medicine-},
-	volume = {2125},
-	year = {2018},
-	bdsk-url-1 = {https://pureportal.strath.ac.uk/en/publications/clef-2018-technologically-assisted-reviews-in-empirical-medicine-}}
+	keywords = {Active learning, Evaluation, Information retrieval, Systematic reviews, TAR, Text classification},
+	month = {9},
+	pages = {1--29},
+	title = {{CLEF 2017 technologically assisted reviews in empirical medicine overview}},
+	url = {https://pureportal.strath.ac.uk/en/publications/clef-2017-technologically-assisted-reviews-in-empirical-medicine-},
+	volume = {1866},
+	year = {2017},
+	bdsk-url-1 = {https://pureportal.strath.ac.uk/en/publications/clef-2017-technologically-assisted-reviews-in-empirical-medicine-}}
 """
 
-_DATASETNAME = "tar2018"
-_DISPLAYNAME = "tar2018"
+_DATASETNAME = "tar2017"
+_DISPLAYNAME = "tar2017"
 
 _DESCRIPTION = """\
-Technologically Assisted Reviews in Empirical Medicine 2018
+Technologically Assisted Reviews in Empirical Medicine 2017
 """
 
 _HOMEPAGE = "https://github.com/CLEF-TAR/tar"
@@ -71,27 +72,15 @@ _CLASS_NAMES = ["included", "excluded"]
 def prepare_dataset(
     input_folder: str,
     output_folder: str,
-    train_qrels: str,
-    test_qrels: str,
 ) -> None:
     if is_prepared(output_folder):
         return
 
-    qrels_df = pd.concat(
-        [
-            pd.read_csv(
-                f"{input_folder}/{train_qrels}",
-                sep="\s+",
-                header=None,
-                names=["review_id", "0", "PMID", "Label"],
-            ),
-            pd.read_csv(
-                f"{input_folder}/{test_qrels}",
-                sep="\s+",
-                header=None,
-                names=["review_id", "0", "PMID", "Label"],
-            ),
-        ]
+    qrels_df = pd.read_csv(
+        f"{input_folder}/tar-master/2017-TAR/all/all.qrels",
+        sep="\t",
+        header=None,
+        names=["review_id", "0", "PMID", "Label"],
     )
 
     print("PubMed data is being downloaded. This may take a while for the first time.")
@@ -108,8 +97,8 @@ def prepare_dataset(
     mark_all_files_prepared(output_folder)
 
 
-class Tar2018Dataset(datasets.GeneratorBasedBuilder):
-    """Technologically Assisted Reviews in Empirical Medicine 2018."""
+class Tar2017Dataset(datasets.GeneratorBasedBuilder):
+    """Technologically Assisted Reviews in Empirical Medicine 2017."""
 
     SOURCE_VERSION = datasets.Version(_SOURCE_VERSION)
     BIGBIO_VERSION = datasets.Version(_BIGBIO_VERSION)
@@ -119,24 +108,24 @@ class Tar2018Dataset(datasets.GeneratorBasedBuilder):
     for dataset_version in dataset_versions:
         BUILDER_CONFIGS.append(
             BigBioConfig(
-                name=f"tar2018_{dataset_version}_source",
+                name=f"tar2017_{dataset_version}_source",
                 version=SOURCE_VERSION,
-                description=f"tar2018 {dataset_version} source schema",
+                description=f"tar2017 {dataset_version} source schema",
                 schema="source",
-                subset_id=f"tar2018_{dataset_version}",
+                subset_id=f"tar2017_{dataset_version}",
             )
         )
         BUILDER_CONFIGS.append(
             BigBioConfig(
-                name=f"tar2018_{dataset_version}_bigbio_text",
+                name=f"tar2017_{dataset_version}_bigbio_text",
                 version=BIGBIO_VERSION,
-                description=f"tar2018 {dataset_version} BigBio schema",
+                description=f"tar2017 {dataset_version} BigBio schema",
                 schema="bigbio_text",
-                subset_id=f"tar2018_{dataset_version}",
+                subset_id=f"tar2017_{dataset_version}",
             )
         )
 
-    DEFAULT_CONFIG_NAME = "tar2018_all_source"
+    DEFAULT_CONFIG_NAME = "tar2017_all_source"
 
     def _info(self) -> datasets.DatasetInfo:
 
@@ -168,30 +157,25 @@ class Tar2018Dataset(datasets.GeneratorBasedBuilder):
         data_dir = dl_manager.download_and_extract(_URLS["tar"])
         pubmed_output_dir = "/".join(self.cache_dir.split("/")[:-3])
 
-        train_qrels = (
-            "tar-master/2018-TAR/Task2/Training/qrels/full.train.abs.2018.qrels"
-        )
-        test_qrels = "tar-master/2018-TAR/Task2/Testing/qrels/full.test.abs.2018.qrels"
-
-        prepare_dataset(
-            input_folder=data_dir,
-            output_folder=pubmed_output_dir,
-            train_qrels=train_qrels,
-            test_qrels=test_qrels,
-        )
+        prepare_dataset(input_folder=data_dir, output_folder=pubmed_output_dir)
 
         return [
             datasets.SplitGenerator(
                 name=datasets.Split.TRAIN,
+                # Whatever you put in gen_kwargs will be passed to _generate_examples
                 gen_kwargs={
-                    "qrels_path": os.path.join(data_dir, train_qrels),
+                    "qrels_path": os.path.join(
+                        data_dir, "tar-master/2017-TAR/training/qrels/qrel_abs_train"
+                    ),
                     "split": "train",
                 },
             ),
             datasets.SplitGenerator(
                 name=datasets.Split.TEST,
                 gen_kwargs={
-                    "qrels_path": os.path.join(data_dir, test_qrels),
+                    "qrels_path": os.path.join(
+                        data_dir, "tar-master/2017-TAR/testing/qrels/qrel_abs_test.txt"
+                    ),
                     "split": "test",
                 },
             ),
@@ -216,8 +200,10 @@ class Tar2018Dataset(datasets.GeneratorBasedBuilder):
             for r in REVIEWS:
                 review_df = pd.read_csv(os.path.join(data_dir, f"{r}.csv"))
                 review_df["Review"] = r
+                # remove old Label column
                 review_df = review_df.drop(columns=["Label"])
 
+                # add Label from qrels_df to review_df based on PMID and review_id
                 review_df = review_df.merge(
                     qrels_df,
                     left_on=["PMID", "Review"],
@@ -231,11 +217,10 @@ class Tar2018Dataset(datasets.GeneratorBasedBuilder):
             df["Review"] = review
 
         for key, example in df.iterrows():
-            review_name = str(example["Review"])
-            title = str(example["Title"])
-            abstract = str(example["Abstract"])
-            print(example["Label"], str(example["PMID"]))
-            label = int(example["Label"])  # fixme soem labels are NaN
+            review_name = example["Review"]
+            title = example["Title"]
+            abstract = example["Abstract"]
+            label = example["Label"]
             pmid = str(example["PMID"])
             uid += 1
             text = f"{title}\n\n{abstract}"
@@ -248,7 +233,6 @@ class Tar2018Dataset(datasets.GeneratorBasedBuilder):
                     "abstract": abstract,
                     "label": label,
                 }
-                print(data)
                 yield str(uid), data
 
             elif self.config.schema == "bigbio_text":
@@ -262,6 +246,6 @@ class Tar2018Dataset(datasets.GeneratorBasedBuilder):
 
 
 if __name__ == "__main__":
-    x = datasets.load_dataset(__file__, name="tar2018_all_source")
+    x = datasets.load_dataset(__file__, name="tar2017_all_source")
     print(type(x))
     print(x)

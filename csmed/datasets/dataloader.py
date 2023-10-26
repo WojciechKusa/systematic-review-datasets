@@ -149,7 +149,7 @@ class BigBioConfigHelpers:
         for dataloader_script in self.dataloader_scripts:
             dataset_name = dataloader_script.stem
             py_module = import_module(
-                f"ec2s.big_screening.datasets.{dataset_name}.{dataset_name}"
+                f"csmed.datasets.datasets.{dataset_name}.{dataset_name}"
             )  # fixme hardcoded path
             ds_module = datasets.load.dataset_module_factory(
                 dataloader_script.as_posix()

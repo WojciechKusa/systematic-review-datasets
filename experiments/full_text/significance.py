@@ -20,7 +20,7 @@ classification_results_folder = "results/"
 prompting_results_folder = "../../data/processed/prompting/"
 
 csmed_ft = load_dataset(
-    "../../ec2s/big_screening/datasets/csmed_ft", name="csmed_ft_all_source"
+    "../../csmed/datasets/datasets/csmed_ft", name="csmed_ft_all_source"
 )
 
 

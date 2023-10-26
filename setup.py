@@ -1,14 +1,14 @@
 from setuptools import setup, find_packages
 
-from ec2s import __version__
+from csmed import __version__
 
 if __name__ == "__main__":
     setup(
-        name="ec2s",
+        name="csmed",
         version=__version__,
         packages=find_packages(),
         author="Wojciech Kusa",
         author_email="wojciech.kusa@tuwien.ac.at",
-        description="Systematic reviews datasets",
+        description="CSMeD - Citation Screening Meta-Dataset",
         license="Apache 2.0",
     )

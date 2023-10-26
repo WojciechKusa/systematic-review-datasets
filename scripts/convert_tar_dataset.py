@@ -6,7 +6,7 @@ from datetime import datetime
 
 from tqdm import tqdm
 
-from ec2s.csmed_cochrane.prepare_dataset import prepare_dataset
+from csmed.csmed_cochrane.prepare_dataset import prepare_dataset
 
 if __name__ == "__main__":
     TAR_REPOSITORY_PATH = "../../tar/"

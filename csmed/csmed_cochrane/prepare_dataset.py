@@ -8,14 +8,14 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
-from ec2s.csmed_cochrane.cochrane_web_parser import (
+from csmed.csmed_cochrane.cochrane_web_parser import (
     parse_cochrane_references,
     parse_data_and_analyses_section,
     parse_search_strategy,
     parse_eligibility_criteria,
     get_safe_soup,
 )
-from ec2s.csmed_cochrane.match_references import expand_references_details
+from csmed.csmed_cochrane.match_references import expand_references_details
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
