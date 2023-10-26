@@ -2,7 +2,7 @@
 
 ____
 
-## Citation screening datasets
+## Citation screening datasets for title and abstract screening
 
 |        | Introduced in                                                                             | # reviews | Domain           | Avg. size | Avg. ratio of included (TA) | Avg. ratio of included (FT) | Additional data | Data URL                                                                                                     | Cochrane | Publicly available | Included in **CSMeD** |
 |-------:|:------------------------------------------------------------------------------------------|----------:|:-----------------|----------:|----------------------------:|----------------------------:|-----------------|--------------------------------------------------------------------------------------------------------------|----------|--------------------|-----------------------|
@@ -18,8 +18,6 @@ ____
 |     10 | [Parmar (2021)](https://keep.lib.asu.edu/_flysystem/fedora/c7/Parmar_asu_0010N_21179.pdf) |         6 | Biomedical       |     3,019 |                       21.6% |                        7.3% | —               | —                                                                                                            | —        | —                  | —                     |
 |     11 | [Hannousse et al. (2022)](https://doi.org/10.1007/978-3-031-04112-9_15)                   |         7 | Computer Science |       340 |                       11.7% |                           — | Review protocol | [GitHub](https://github.com/hannousse/Semantic-Scholar-Evaluation)                                           | —        | ✓                  | ✓                     |
 |     12 | [Wang et al. (2022)](https://doi.org/10.1145/3477495.3531748)                             |        40 | Clinical         |     1,326 |                           — |                           — | Review protocol | [GitHub](https://github.com/ielab/sysrev-seed-collection)                                                    | —        | ✓                  | —                     |
-|     13 | EC2S                                                                                      |        60 | Interventions    |         — |                           — |                           — | Review protocol | [GitHub](https://github.com/WojciechKusa/systematic-review-datasets/blob/main/data/raw/ec2s_reviews.json)    | ✓        | ✓                  | ✓                     |
-| **14** | csmed-test-2022                                                                           |        31 | Mixed            |         — |                           — |                           — | Review protocol | [GitHub](https://github.com/WojciechKusa/systematic-review-datasets/blob/main/data/raw/pcs_reviews.json)     | ✓        | ✓                  | ✓                     |
 
 ** CLEF TAR 2019 contains 38 reviews of interventions, 8 DTA, 1 Prognosis and 2 Qualitative systematic reviews.
 
