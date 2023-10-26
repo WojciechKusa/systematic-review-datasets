@@ -36,13 +36,6 @@ Reviews contain list of papers with their titles, abstracts, and labels (include
 _HOMEPAGE = "https://github.com/WojciechKusa/systematic-review-datasets"
 _LICENSE = "CC BY-SA 4.0"
 
-_URLS = {
-    _DATASETNAME: {
-        "ohat": "https://static-content.springer.com/esm/art%3A10.1186%2Fs13643-016-0263-z/MediaObjects/13643_2016_263_MOESM1_ESM.xlsx",
-        "camrades": "https://static-content.springer.com/esm/art%3A10.1186%2Fs13643-016-0263-z/MediaObjects/13643_2016_263_MOESM2_ESM.xlsx",
-    }
-}
-
 _SUPPORTED_TASKS = [Tasks.TEXT_CLASSIFICATION]
 
 _SOURCE_VERSION = "1.0.0"
@@ -132,8 +125,6 @@ class CSMeDBasic:
 
 if __name__ == "__main__":
     csm = CSMeDBasic()
-    csmed_dataset = csm.load_dataset()
-
+    csmed_dataset = csm.load_dataset(base_path='.')
     x = csmed_dataset.keys()
-
     print(x)
