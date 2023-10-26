@@ -9,7 +9,7 @@ from matplotlib import pyplot as plt
 from matplotlib_venn import venn2, venn3
 from rich import print as rprint
 
-from ec2s.big_screening.dataloader import BigBioConfigHelpers
+from csmed.datasets.dataloader import BigBioConfigHelpers
 from visualisation.ngram import get_tuples_manual_sentences
 
 
@@ -224,7 +224,7 @@ if __name__ == "__main__":
         data_config = data_configs[data_idx]
         dataset = load_dataset(
             # FIXME (Wojtek): hardcoded path
-            f"ec2s/big_screening/datasets/{data_name}/{data_name}.py",
+            f"csmed/datasets/datasets/{data_name}/{data_name}.py",
             name=data_config_name,
         )
         # general token length

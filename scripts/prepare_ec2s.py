@@ -4,7 +4,7 @@ from datetime import datetime
 
 from tqdm import tqdm
 
-from ec2s.ec2s.prepare_dataset import prepare_dataset
+from csmed.csmed_cochrane.prepare_dataset import prepare_dataset
 
 if __name__ == "__main__":
     EC2S_REVIEWS_FILE = "../data/raw/ec2s_reviews.json"

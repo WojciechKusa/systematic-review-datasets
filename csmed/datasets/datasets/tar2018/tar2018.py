@@ -18,10 +18,10 @@ from typing import List, Tuple, Dict
 import datasets
 import pandas as pd
 
-from ec2s.big_screening.loader.bigbiohub import BigBioConfig
-from ec2s.big_screening.loader.bigbiohub import Tasks
-from ec2s.big_screening.loader.bigbiohub import text_features
-from ec2s.big_screening.utils import (
+from csmed.datasets.loader.bigbiohub import BigBioConfig
+from csmed.datasets.loader.bigbiohub import Tasks
+from csmed.datasets.loader.bigbiohub import text_features
+from csmed.datasets.utils import (
     is_prepared,
     get_from_pubmed,
     save_checksum,
@@ -33,18 +33,24 @@ _PUBMED = True
 _LOCAL = False
 
 _CITATION = """\
-@article{Kanoulas2019CLEFOverview,
-	author = {E. Kanoulas and Dan Li and Leif Azzopardi and Ren{\'e} Spijker},
-	booktitle = {CLEF},
-	title = {{CLEF 2019 Technology Assisted Reviews in Empirical Medicine Overview}},
-	year = {2019}}
+@article{Kanoulas2018CLEFOverview,
+	author = {Kanoulas, Evangelos and Li, Dan and Azzopardi, Leif and Spijker, Rene},
+	issn = {1613-0073},
+	journal = {CEUR Workshop Proceedings},
+	keywords = {Cochrane, DTA, PubMed, TAR, active learning, benchmarking, diagnostic test accuracy, e-health, evaluation, high recall, information retrieval, relevance feedback, systematic reviews, technology assisted reviews, test collection, text classification},
+	month = {7},
+	title = {{CLEF 2018 technologically assisted reviews in empirical medicine overview}},
+	url = {https://pureportal.strath.ac.uk/en/publications/clef-2018-technologically-assisted-reviews-in-empirical-medicine-},
+	volume = {2125},
+	year = {2018},
+	bdsk-url-1 = {https://pureportal.strath.ac.uk/en/publications/clef-2018-technologically-assisted-reviews-in-empirical-medicine-}}
 """
 
-_DATASETNAME = "tar2019"
-_DISPLAYNAME = "tar2019"
+_DATASETNAME = "tar2018"
+_DISPLAYNAME = "tar2018"
 
 _DESCRIPTION = """\
-Technologically Assisted Reviews in Empirical Medicine 2019
+Technologically Assisted Reviews in Empirical Medicine 2018
 """
 
 _HOMEPAGE = "https://github.com/CLEF-TAR/tar"
@@ -54,7 +60,7 @@ _URLS = {
     "tar": "https://github.com/WojciechKusa/tar/archive/refs/heads/master.zip",
 }
 
-_SUPPORTED_TASKS = [Tasks.TEXT_CLASSIFICATION, Tasks.QUESTION_ANSWERING]
+_SUPPORTED_TASKS = [Tasks.TEXT_CLASSIFICATION]
 
 _SOURCE_VERSION = "1.0.0"
 _BIGBIO_VERSION = "1.0.0"
@@ -63,40 +69,47 @@ _CLASS_NAMES = ["included", "excluded"]
 
 
 def prepare_dataset(
-    input_folder: str, output_folder: str, dataset_splits: dict[str, dict[str, str]]
+    input_folder: str,
+    output_folder: str,
+    train_qrels: str,
+    test_qrels: str,
 ) -> None:
     if is_prepared(output_folder):
-        print("PubMed data is already prepared.")
         return
 
-    for dataset_split, review_types in dataset_splits.items():
-        for review_type, qrels_file in review_types.items():
-            qrels_df = pd.read_csv(
-                f"{input_folder}/tar-master/2019-TAR/Task2/{dataset_split}/{review_type}/qrels/{qrels_file}",
+    qrels_df = pd.concat(
+        [
+            pd.read_csv(
+                f"{input_folder}/{train_qrels}",
                 sep="\s+",
                 header=None,
                 names=["review_id", "0", "PMID", "Label"],
-            )
+            ),
+            pd.read_csv(
+                f"{input_folder}/{test_qrels}",
+                sep="\s+",
+                header=None,
+                names=["review_id", "0", "PMID", "Label"],
+            ),
+        ]
+    )
 
-            print(
-                "PubMed data is being downloaded. This may take a while for the first time."
-            )
-            for review_id in qrels_df["review_id"].unique():
-                review_df = qrels_df[qrels_df["review_id"] == review_id]
-                print(f"{review_id=}, {len(review_df)=}")
-                review_df = get_from_pubmed(review_df)
-                review_df.to_csv(f"{output_folder}/{review_id}.csv", index=False)
-                print(f"Prepared review size: {len(review_df)}")
-                save_checksum(
-                    file=f"{output_folder}/{review_id}.csv",
-                    dataset_directory=output_folder,
-                )
+    print("PubMed data is being downloaded. This may take a while for the first time.")
+    for review_id in qrels_df["review_id"].unique():
+        review_df = qrels_df[qrels_df["review_id"] == review_id]
+        print(f"{review_id=}, {len(review_df)=}")
+        review_df = get_from_pubmed(review_df)
+        review_df.to_csv(f"{output_folder}/{review_id}.csv", index=False)
+        print(f"Prepared review size: {len(review_df)}")
+        save_checksum(
+            file=f"{output_folder}/{review_id}.csv", dataset_directory=output_folder
+        )
 
-            mark_all_files_prepared(output_folder)
+    mark_all_files_prepared(output_folder)
 
 
-class Tar2019Dataset(datasets.GeneratorBasedBuilder):
-    """Technologically Assisted Reviews in Empirical Medicine 2019."""
+class Tar2018Dataset(datasets.GeneratorBasedBuilder):
+    """Technologically Assisted Reviews in Empirical Medicine 2018."""
 
     SOURCE_VERSION = datasets.Version(_SOURCE_VERSION)
     BIGBIO_VERSION = datasets.Version(_BIGBIO_VERSION)
@@ -106,24 +119,24 @@ class Tar2019Dataset(datasets.GeneratorBasedBuilder):
     for dataset_version in dataset_versions:
         BUILDER_CONFIGS.append(
             BigBioConfig(
-                name=f"tar2019_{dataset_version}_source",
+                name=f"tar2018_{dataset_version}_source",
                 version=SOURCE_VERSION,
-                description=f"tar2019 {dataset_version} source schema",
+                description=f"tar2018 {dataset_version} source schema",
                 schema="source",
-                subset_id=f"tar2019_{dataset_version}",
+                subset_id=f"tar2018_{dataset_version}",
             )
         )
         BUILDER_CONFIGS.append(
             BigBioConfig(
-                name=f"tar2019_{dataset_version}_bigbio_text",
+                name=f"tar2018_{dataset_version}_bigbio_text",
                 version=BIGBIO_VERSION,
-                description=f"tar2019 {dataset_version} BigBio schema",
+                description=f"tar2018 {dataset_version} BigBio schema",
                 schema="bigbio_text",
-                subset_id=f"tar2019_{dataset_version}",
+                subset_id=f"tar2018_{dataset_version}",
             )
         )
 
-    DEFAULT_CONFIG_NAME = "tar2019_all_source"
+    DEFAULT_CONFIG_NAME = "tar2018_all_source"
 
     def _info(self) -> datasets.DatasetInfo:
 
@@ -155,89 +168,53 @@ class Tar2019Dataset(datasets.GeneratorBasedBuilder):
         data_dir = dl_manager.download_and_extract(_URLS["tar"])
         pubmed_output_dir = "/".join(self.cache_dir.split("/")[:-3])
 
-        dataset_splits = {
-            "Training": {
-                "Intervention": "full.train.int.abs.2019.qrels",
-                "DTA": "full.train.dta.abs.2019.qrels",
-            },
-            "Testing": {
-                "Intervention": "full.test.intervention.abs.2019.qrels",
-                "DTA": "full.test.dta.abs.2019.qrels",
-                "Prognosis": "full.test.prognosis.abs.2019.qrels",
-                "Qualitative": "full.test.qualitative.abs.2019.qrels",
-            },
-        }
+        train_qrels = (
+            "tar-master/2018-TAR/Task2/Training/qrels/full.train.abs.2018.qrels"
+        )
+        test_qrels = "tar-master/2018-TAR/Task2/Testing/qrels/full.test.abs.2018.qrels"
 
         prepare_dataset(
             input_folder=data_dir,
             output_folder=pubmed_output_dir,
-            dataset_splits=dataset_splits,
+            train_qrels=train_qrels,
+            test_qrels=test_qrels,
         )
 
         return [
             datasets.SplitGenerator(
                 name=datasets.Split.TRAIN,
                 gen_kwargs={
-                    "qrels_data_dir": data_dir,
-                    "docs_data_dir": pubmed_output_dir,
-                    "qrels_dict": dataset_splits["Training"],
+                    "qrels_path": os.path.join(data_dir, train_qrels),
                     "split": "train",
                 },
             ),
             datasets.SplitGenerator(
                 name=datasets.Split.TEST,
                 gen_kwargs={
-                    "qrels_data_dir": data_dir,
-                    "docs_data_dir": pubmed_output_dir,
-                    "qrels_dict": dataset_splits["Testing"],
+                    "qrels_path": os.path.join(data_dir, test_qrels),
                     "split": "test",
                 },
             ),
         ]
 
-    def _generate_examples(
-        self,
-        qrels_data_dir: str,
-        docs_data_dir: str,
-        qrels_dict: dict[str, str],
-        split: str,
-    ) -> Tuple[int, Dict]:
+    def _generate_examples(self, qrels_path, split: str) -> Tuple[int, Dict]:
         """Yields examples as (key, example) tuples."""
 
-        if split == "train":
-            dataset_split = "Training"
-        elif split == "test":
-            dataset_split = "Testing"
-        else:
-            raise ValueError(f"Unsupported split {split}")
-
+        data_dir = "/".join(self.cache_dir.split("/")[:-3])
         review = "_".join(self.config.subset_id.split("_")[1:])
-
-        qrels_df = pd.DataFrame()
-        for review_type, qrels_file in qrels_dict.items():
-            qrels_path = os.path.join(
-                qrels_data_dir,
-                f"tar-master/2019-TAR/Task2/{dataset_split}/{review_type}/qrels/{qrels_file}",
-            )
-            qrels_df = pd.concat(
-                [
-                    qrels_df,
-                    pd.read_csv(
-                        qrels_path,
-                        sep="\s+",
-                        header=None,
-                        names=["review_id", "0", "PMID", "Label"],
-                    ),
-                ]
-            )
-
+        qrels_df = pd.read_csv(
+            qrels_path,
+            sep="\s+",
+            header=None,
+            names=["review_id", "0", "PMID", "Label"],
+        )
         REVIEWS = qrels_df["review_id"].unique().tolist()
         uid = 0
 
         if review == "all":
             df = pd.DataFrame()
             for r in REVIEWS:
-                review_df = pd.read_csv(os.path.join(docs_data_dir, f"{r}.csv"))
+                review_df = pd.read_csv(os.path.join(data_dir, f"{r}.csv"))
                 review_df["Review"] = r
                 review_df = review_df.drop(columns=["Label"])
 
@@ -250,18 +227,16 @@ class Tar2019Dataset(datasets.GeneratorBasedBuilder):
 
                 df = pd.concat([df, review_df])
         else:
-            df = pd.read_csv(os.path.join(docs_data_dir, f"{review}.csv"))
+            df = pd.read_csv(os.path.join(data_dir, f"{review}.csv"))
             df["Review"] = review
 
         for key, example in df.iterrows():
-            review_name = example["Review"]
-            title = example["Title"]
-            abstract = example["Abstract"]
-            label = example["Label"]
-            try:
-                pmid = str(example["PMID"])
-            except:
-                pmid = "NA"  # some reviews don't have PMIDs
+            review_name = str(example["Review"])
+            title = str(example["Title"])
+            abstract = str(example["Abstract"])
+            print(example["Label"], str(example["PMID"]))
+            label = int(example["Label"])  # fixme soem labels are NaN
+            pmid = str(example["PMID"])
             uid += 1
             text = f"{title}\n\n{abstract}"
 
@@ -273,6 +248,7 @@ class Tar2019Dataset(datasets.GeneratorBasedBuilder):
                     "abstract": abstract,
                     "label": label,
                 }
+                print(data)
                 yield str(uid), data
 
             elif self.config.schema == "bigbio_text":
@@ -286,6 +262,6 @@ class Tar2019Dataset(datasets.GeneratorBasedBuilder):
 
 
 if __name__ == "__main__":
-    x = datasets.load_dataset(__file__, name="tar2019_all_source")
+    x = datasets.load_dataset(__file__, name="tar2018_all_source")
     print(type(x))
     print(x)

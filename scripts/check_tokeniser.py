@@ -37,7 +37,7 @@ if __name__ == "__main__":
     enc = tiktoken.encoding_for_model("gpt-4")
 
     csmed_ft = load_dataset(
-        "../ec2s/big_screening/datasets/csmed_ft", name="csmed_ft_all_source"
+        "../csmed/datasets/datasets/csmed_ft", name="csmed_ft_all_source"
     )
 
     max_review_size = 2048

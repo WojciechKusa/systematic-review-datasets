@@ -6,7 +6,7 @@ import re
 
 from tqdm import tqdm
 
-from ec2s.ec2s.prepare_dataset import prepare_dataset
+from csmed.csmed_cochrane.prepare_dataset import prepare_dataset
 
 review_files = "https://raw.githubusercontent.com/ielab/SIGIR2017-SysRev-Collection/master/systematic_reviews.json"
 

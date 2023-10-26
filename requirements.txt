@@ -1,4 +1,4 @@
-git+https://github.com/bigscience-workshop/biomedical.git
+git+https://github.com/bigscience-workshop/biomedical.git@cf4779a4ca477a9266f412e3214a2a46f2b2b1b5#egg=bigbio
 streamlit~=1.22.0
 beautifulsoup4==4.12.2
 biopython==1.81

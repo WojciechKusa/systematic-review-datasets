@@ -9,7 +9,7 @@ from datasets import load_dataset
 from plotly.subplots import make_subplots
 from rich import print as rprint
 
-from ec2s.big_screening.dataloader import BigBioConfigHelpers
+from csmed.datasets.dataloader import BigBioConfigHelpers
 from visualisation.ngram import get_tuples_manual_sentences
 
 # pio.kaleido.scope.mathjax = None
@@ -289,7 +289,7 @@ def draw_figure(data_name, data_config_name, schema_type, split_name: str):
     splits = metadata_helper.keys()
     # calls HF load_dataset _again_ for token parsing
     dataset = load_dataset(
-        f"../ec2s/big_screening/datasets/{data_name}/{data_name}.py",
+        f"../csmed/datasets/datasets/{data_name}/{data_name}.py",
         name=data_config_name,
     )
     # general token length

@@ -48,7 +48,7 @@ if __name__ == "__main__":
     }
 
     csmed_ft = load_dataset(
-        "../../ec2s/big_screening/datasets/csmed_ft", name="csmed_ft_all_source"
+        "../../csmed/datasets/datasets/csmed_ft", name="csmed_ft_all_source"
     )
 
     model_name = "gpt-3.5-turbo-16k"
