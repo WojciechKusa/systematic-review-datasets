@@ -40,7 +40,7 @@ def evaluate_runs(
     )
 
     print(report)
-    with open(outfile, "w") as f:
+    with open(outfile, "w", encoding="utf_8") as f:
         f.write(report.to_latex())
 
 
