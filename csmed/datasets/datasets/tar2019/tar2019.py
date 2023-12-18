@@ -240,7 +240,7 @@ class Tar2019Dataset(datasets.GeneratorBasedBuilder):
 
     BUILDER_CONFIGS.append(
         BigBioConfig(
-            name=f"tar2019_all_source",
+            name="tar2019_all_source",
             version=SOURCE_VERSION,
             description=f"tar2019 all source schema",
             schema="source",
