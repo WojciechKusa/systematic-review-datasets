@@ -244,7 +244,7 @@ class Tar2019Dataset(datasets.GeneratorBasedBuilder):
             version=SOURCE_VERSION,
             description="tar2019 all source schema",
             schema="source",
-            subset_id=f"tar2019_all",
+            subset_id="tar2019_all",
         )
     )
     DEFAULT_CONFIG_NAME = "tar2019_all_source"
