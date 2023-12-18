@@ -242,7 +242,7 @@ class Tar2019Dataset(datasets.GeneratorBasedBuilder):
         BigBioConfig(
             name="tar2019_all_source",
             version=SOURCE_VERSION,
-            description=f"tar2019 all source schema",
+            description="tar2019 all source schema",
             schema="source",
             subset_id=f"tar2019_all",
         )
