@@ -283,7 +283,7 @@ class Sigir2017Dataset(datasets.GeneratorBasedBuilder):
             version=SOURCE_VERSION,
             description="sigir2017 all source schema",
             schema="source",
-            subset_id=f"sigir2017_all",
+            subset_id="sigir2017_all",
         )
     )
 
