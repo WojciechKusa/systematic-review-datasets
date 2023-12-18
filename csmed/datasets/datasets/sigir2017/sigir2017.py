@@ -281,7 +281,7 @@ class Sigir2017Dataset(datasets.GeneratorBasedBuilder):
         BigBioConfig(
             name="sigir2017_all_source",
             version=SOURCE_VERSION,
-            description=f"sigir2017 all source schema",
+            description="sigir2017 all source schema",
             schema="source",
             subset_id=f"sigir2017_all",
         )
