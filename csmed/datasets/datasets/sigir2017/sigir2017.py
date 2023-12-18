@@ -279,7 +279,7 @@ class Sigir2017Dataset(datasets.GeneratorBasedBuilder):
 
     BUILDER_CONFIGS.append(
         BigBioConfig(
-            name=f"sigir2017_all_source",
+            name="sigir2017_all_source",
             version=SOURCE_VERSION,
             description=f"sigir2017 all source schema",
             schema="source",
