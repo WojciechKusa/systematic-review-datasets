@@ -152,7 +152,7 @@ def evaluate_runs(
     )
 
     print(report)
-    with open(f"{outfile_path}/{outfile}", "w") as f:
+    with open(f"{outfile_path}/{outfile}", "w", encoding="utf_8") as f:
         f.write(report.to_latex())
 
     other_measures = {
