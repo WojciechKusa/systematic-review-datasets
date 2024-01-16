@@ -29,5 +29,11 @@ preferred-citation:
     - family-names: "Hanbury"
       given-names: "Allan"
   title: "CSMeD: Bridging the Dataset Gap in Automated Citation Screening for Systematic Literature Reviews"
-  booktitle: "Thirty-seventh Conference on Neural Information Processing Systems Datasets and Benchmarks Track"
+  conference:
+    name: "Thirty-seventh Conference on Neural Information Processing Systems Datasets and Benchmarks Track
+    city: "New Orleans"
+    region: "Louisiana"
+    country: "USA"
+    date-start: 2023-12-10
+    date-end: 2023-12-16
   year: 2023
