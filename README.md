@@ -80,3 +80,7 @@ To download the datasets, run:
 ```zsh
 (csmed)$ python scripts/prepare_prospective_dataset.py
 ```
+
+## Experiments
+
+Baseline experiments from the paper are described in the at: [WojciechKusa/CSMeD-baselines](https://github.com/WojciechKusa/CSMeD-baselines) repository.
