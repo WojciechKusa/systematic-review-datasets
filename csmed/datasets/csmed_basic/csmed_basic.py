@@ -17,8 +17,8 @@ from typing import Union
 
 import datasets
 
-from csmed.datasets.loader.bigbiohub import Tasks
-from csmed.datasets.loader.bigbiohub import text_features
+from csmed.loader.bigbiohub import Tasks
+from csmed.loader.bigbiohub import text_features
 
 _LANGUAGES = ["English"]
 _PUBMED = True

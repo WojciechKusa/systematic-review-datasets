@@ -9,7 +9,7 @@ from datasets import load_dataset
 from plotly.subplots import make_subplots
 from rich import print as rprint
 
-from csmed.datasets.dataloader import BigBioConfigHelpers
+from csmed.dataloader import BigBioConfigHelpers
 from visualisation.ngram import get_tuples_manual_sentences
 
 # pio.kaleido.scope.mathjax = None

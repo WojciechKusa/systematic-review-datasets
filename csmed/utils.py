@@ -11,7 +11,7 @@ from tqdm import tqdm
 
 def set_entrez_email() -> None:
     entrez_email_file = os.path.join(
-        os.path.dirname(__file__), "../../config/entrez_email.txt"
+        os.path.dirname(__file__), "../config/entrez_email.txt"
     )
 
     if os.path.exists(entrez_email_file):
