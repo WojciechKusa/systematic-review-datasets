@@ -362,8 +362,9 @@ class CSMeDCochrane:
     SOURCE_VERSION = datasets.Version(_SOURCE_VERSION)
     BIGBIO_VERSION = datasets.Version(_BIGBIO_VERSION)
 
+    @staticmethod
     def load_dataset(
-        self, base_path
+            base_path
     ) -> dict[str, dict[str, dict[str, Union[str, datasets.Dataset]]]]:
         """Returns a dictionary of datasets.
         The keys are the names of the reviews.
