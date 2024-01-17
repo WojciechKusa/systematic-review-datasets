@@ -1,0 +1,14 @@
+streamlit~=1.22.0
+matplotlib~=3.7.1
+matplotlib_venn~=0.11.9
+plotly~=5.14.1
+rich~=13.3.5
+umap-learn~=0.5.3
+scikit-image==0.21.0
+holoviews==1.15.0
+datashader==0.15.0
+bokeh==2.4.3
+colorcet==3.0.1
+nltk~=3.8.1
+spacy~=3.5.3
+en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.5.0/en_core_web_sm-3.5.0-py3-none-any.whl#sha256=0964370218b7e1672a30ac50d72cdc6b16f7c867496f1d60925691188f4d2510

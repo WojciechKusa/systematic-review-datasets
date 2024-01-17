@@ -1,0 +1,4 @@
+git+https://github.com/kermitt2/grobid_client_python.git
+grobid_tei_xml~=0.1.3
+requests~=2.31.0
+beautifulsoup4==4.12.2

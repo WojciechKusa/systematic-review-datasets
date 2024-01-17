@@ -47,13 +47,14 @@ CSMeD-test.*
 
 ### Requirements
 
-Assuming you have `conda` installed, run:
+Assuming you have `conda` installed, to create environment for loading CSMeD run:
 
 ```zsh
 $ conda create -n csmed python=3.10
 $ conda activate csmed
 (csmed)$ pip install -r requirements.txt
 ```
+
 
 ### Data acquisition prerequisites
 
@@ -79,11 +80,32 @@ Library and the email address for PubMed Entrez.
 
 ### Downloading datasets
 
+First install additional requirements:
+
+```zsh
+(csmed)$ pip install -r dev-requirements.txt
+```
+
 To download the datasets, run:
 
 ```zsh
 (csmed)$ python scripts/prepare_prospective_dataset.py
 ```
+
+## Visualisations
+
+To run visualisations first you need to install additional requirements:
+
+```zsh
+(csmed)$ pip install -r vis-requirements.txt
+```
+
+Then you can run the visualisations using streamlit:
+
+```zsh
+(csmed)$ streamlit run visualisation/_🏠_Home.py.py
+```
+
 
 ## Experiments
 
