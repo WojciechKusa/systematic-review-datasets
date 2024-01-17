@@ -1,0 +1,39 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+authors:
+  - family-names: "Kusa"
+    given-names: "Wojciech"
+  - family-names: "Mendoza"
+    given-names: "Oscar E"
+  - family-names: "Samwald"
+    given-names: "Matthias"
+  - family-names: "Knoth"
+    given-names: "Petr"
+  - family-names: "Hanbury"
+    given-names: "Allan"
+title: "CSMeD: Bridging the Dataset Gap in Automated Citation Screening for Systematic Literature Reviews"
+version: 1.0
+date-released: 2023
+repository-code: "https://github.com/WojciechKusa/systematic-review-datasets"
+preferred-citation:
+  type: conference-paper
+  authors:
+    - family-names: "Kusa"
+      given-names: "Wojciech"
+    - family-names: "Mendoza"
+      given-names: "Oscar E"
+    - family-names: "Samwald"
+      given-names: "Matthias"
+    - family-names: "Knoth"
+      given-names: "Petr"
+    - family-names: "Hanbury"
+      given-names: "Allan"
+  title: "CSMeD: Bridging the Dataset Gap in Automated Citation Screening for Systematic Literature Reviews"
+  conference:
+    name: "Thirty-seventh Conference on Neural Information Processing Systems Datasets and Benchmarks Track"
+    city: "New Orleans"
+    region: "Louisiana"
+    country: "USA"
+    date-start: 2023-12-10
+    date-end: 2023-12-16
+  year: 2023

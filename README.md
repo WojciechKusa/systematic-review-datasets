@@ -1,5 +1,9 @@
 # *CSMeD:* Citation Screening Meta-Dataset for systematic review automation evaluation
 
+This package serves as basis for the paper: _"CSMeD: Bridging the Dataset Gap in Automated Citation Screening for Systematic Literature Reviews"_ by Wojciech Kusa, Oscar E. Mendoza, Matthias Samwald, Petr Knoth, Allan Hanbury
+
+[![https://openreview.net/forum?id=ZbmS3MU25p](http://img.shields.io/badge/NeurIPS_2023-CSMeD-7514ae.svg)](https://openreview.net/forum?id=ZbmS3MU25p) 
+
 ____
 
 ## Citation screening datasets for title and abstract screening
@@ -80,3 +84,7 @@ To download the datasets, run:
 ```zsh
 (csmed)$ python scripts/prepare_prospective_dataset.py
 ```
+
+## Experiments
+
+Baseline experiments from the paper are described in the at: [WojciechKusa/CSMeD-baselines](https://github.com/WojciechKusa/CSMeD-baselines) repository.
