@@ -6,15 +6,15 @@ This package serves as basis for the paper: _"CSMeD: Bridging the Dataset Gap in
 
 Table of Contents
 
-- [1. CSMeD: Citation screening datasets for title and abstract screening](#csmed)
+- [1. CSMeD: Title and abstract screening datasets](#csmed)
 - [2. CSMeD-FT: Full-text screening dataset](#csmed-ft)
 - [3. Installation](#installation)
-- [4. Visualisations](#visualisations)
-- [5. Experiments](#experiments)
+- [4. Examples](#examples)
+- [5. Visualisations](#visualisations)
+- [6. Experiments](#experiments)
 
 ____
 
-/ add link from table of contents to the sections
 
 ## <a name="csmed" /> 1. CSMeD: Citation screening datasets for title and abstract screening
 
@@ -103,7 +103,12 @@ To download the datasets, run:
 (csmed)$ python scripts/prepare_prospective_dataset.py
 ```
 
-## <a name="visualisations" /> 4. Visualisations
+## <a name="examples" /> 4. Examples
+
+Examples presenting how to use the datasets are available in the [notebooks](notebooks) directory.
+
+
+## <a name="visualisations" /> 5. Visualisations
 
 To run visualisations first you need to install additional requirements:
 
@@ -118,6 +123,6 @@ Then you can run the visualisations using streamlit:
 ```
 
 
-## <a name="experiments" /> 5. Experiments
+## <a name="experiments" /> 6. Experiments
 
 Baseline experiments from the paper are described in the at: [WojciechKusa/CSMeD-baselines](https://github.com/WojciechKusa/CSMeD-baselines) repository.
