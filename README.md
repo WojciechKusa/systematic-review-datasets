@@ -83,11 +83,9 @@ $ conda activate csmed
 
 ### Data acquisition prerequisites
 
-To obtain the datasets, you need to configure the following:
+To obtain the metadata for CSMeD-Cochrane datasets, you need to configure the cookie for the [Cochrane Library](https://www.cochranelibrary.com/) website.
 
-- Get a cookie from https://www.cochranelibrary.com/
-
-Furthermore, to obtain full-text PDFs, you need to configure the following:
+Furthermore, to obtain full-text PDFs for CSMeD-FT, you need to configure the following:
 
 1. SemanticScholar API key: https://www.semanticscholar.org/product/api
 2. CORE API key: https://core.ac.uk/services/api
@@ -99,11 +97,11 @@ If you have all the prerequisites, run:
 (csmed)$ python confgure.py
 ```
 
-And follow the prompts providing API keys, cookies, email address to use PubMed Entrez and paths to GROBID server.
+And follow the prompts providing API keys, cookies, email address to use PubMed Entrez APIs and paths to GROBID server.
 You don't need to provide all the information, the bare minimum to construct the datasets is the cookie from Cochrane
 Library and the email address for PubMed Entrez.
 
-### Downloading datasets
+### Downloading raw full-text datasets
 
 First install additional requirements:
 
@@ -114,12 +112,12 @@ First install additional requirements:
 To download the datasets, run:
 
 ```zsh
-(csmed)$ python scripts/prepare_prospective_dataset.py
+(csmed)$ python scripts/prepare_full_texts.py
 ```
 
 ## <a name="examples" /> 4. Examples
 
-Examples presenting how to use the datasets are available in the [notebooks](notebooks) directory.
+Examples presenting how to use the datasets are available in the [notebooks/](notebooks) directory.
 
 ## <a name="visualisations" /> 5. Visualisations
 
