@@ -4,9 +4,20 @@ This package serves as basis for the paper: _"CSMeD: Bridging the Dataset Gap in
 
 [![https://openreview.net/forum?id=ZbmS3MU25p](http://img.shields.io/badge/NeurIPS_2023-CSMeD-7514ae.svg)](https://openreview.net/forum?id=ZbmS3MU25p) 
 
+Table of Contents
+
+- [1. CSMeD: Citation screening datasets for title and abstract screening](#csmed)
+- [2. CSMeD-FT: Full-text screening dataset](#csmed-ft)
+- [3. Installation](#installation)
+- [4. Visualisations](#visualisations)
+- [5. Experiments](#experiments)
+
 ____
 
-## Citation screening datasets for title and abstract screening
+/ add link from table of contents to the sections
+
+## <a name="csmed" /> 1. CSMeD: Citation screening datasets for title and abstract screening
+
 
 |        | Introduced in                                                                             | # reviews | Domain           | Avg. size | Avg. ratio of included (TA) | Avg. ratio of included (FT) | Additional data | Data URL                                                                                                     | Cochrane | Publicly available | Included in **CSMeD** |
 |-------:|:------------------------------------------------------------------------------------------|----------:|:-----------------|----------:|----------------------------:|----------------------------:|-----------------|--------------------------------------------------------------------------------------------------------------|----------|--------------------|-----------------------|
@@ -30,20 +41,20 @@ TA stands for Title + Abstract screening phase, FT for Full-text screening phase
 query. `Avg. ratio of included (TA)` describes the average ratio of included records in the TA
 phase. `Avg. ratio of included (FT)` describes the average ratio of included records in the FT phase.
 
-## CSMeD-FT: Full-text screening dataset
+##  <a name="csmed-ft" /> 2. CSMeD-FT: Full-text screening dataset
 
-| Dataset name     | #reviews | #docs. | #included | %included | Avg. #words in document | Avg. #words in review |
-|------------------|----------|--------|-----------|-----------|-------------------------|-----------------------|
-| CSMeD-train      | 148      | 2,053  | 904       | 44.0%     | 4,535                   | 1,493                 |
-| CSMeD-dev        | 36       | 644    | 202       | 31.4%     | 4,419                   | 1,402                 |
-| CSMeD-test       | 29       | 636    | 278       | 43.7%     | 4,957                   | 2,318                 |
-| CSMeD-test-small | 16       | 50     | 22        | 44.0%     | 5,042                   | 2,354                 |
+| Dataset name        | #reviews | #docs. | #included | %included | Avg. #words in document | Avg. #words in review |
+|---------------------|----------|--------|-----------|-----------|-------------------------|-----------------------|
+| CSMeD-FT-train      | 148      | 2,053  | 904       | 44.0%     | 4,535                   | 1,493                 |
+| CSMeD-FT-dev        | 36       | 644    | 202       | 31.4%     | 4,419                   | 1,402                 |
+| CSMeD-FT-test       | 29       | 636    | 278       | 43.7%     | 4,957                   | 2,318                 |
+| CSMeD-FT-test-small | 16       | 50     | 22        | 44.0%     | 5,042                   | 2,354                 |
 
 *Column '#docs' refers to the total number of documents included in the dataset and '#included' mentions number of
 included documents on the full-text step. CSMeD-test-small is a subset of
 CSMeD-test.*
 
-## Installation
+## <a name="installation" /> 3. Installation
 
 ### Requirements
 
@@ -92,7 +103,7 @@ To download the datasets, run:
 (csmed)$ python scripts/prepare_prospective_dataset.py
 ```
 
-## Visualisations
+## <a name="visualisations" /> 4. Visualisations
 
 To run visualisations first you need to install additional requirements:
 
@@ -107,6 +118,6 @@ Then you can run the visualisations using streamlit:
 ```
 
 
-## Experiments
+## <a name="experiments" /> 5. Experiments
 
 Baseline experiments from the paper are described in the at: [WojciechKusa/CSMeD-baselines](https://github.com/WojciechKusa/CSMeD-baselines) repository.
