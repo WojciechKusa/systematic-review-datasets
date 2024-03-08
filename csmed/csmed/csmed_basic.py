@@ -97,7 +97,7 @@ class CSMeDBasic:
 
     @staticmethod
     def load_dataset(
-            base_path
+        base_path,
     ) -> dict[str, dict[str, dict[str, Union[str, datasets.Dataset]]]]:
         """Returns a dictionary of datasets.
         The keys are the names of the reviews.
@@ -132,7 +132,6 @@ class CSMeDBasic:
 
 
 if __name__ == "__main__":
-    csm = CSMeDBasic()
-    csmed_dataset = csm.load_dataset(base_path=".")
+    csmed_dataset = CSMeDBasic.load_dataset(base_path="")
     x = csmed_dataset.keys()
     print(x)
