@@ -17,8 +17,8 @@ from typing import Union
 
 import datasets
 
-from csmed.datasets.loader.bigbiohub import Tasks
-from csmed.datasets.loader.bigbiohub import text_features
+from csmed.loader.bigbiohub import Tasks
+from csmed.loader.bigbiohub import text_features
 
 _LANGUAGES = ["English"]
 _PUBMED = True
@@ -95,8 +95,9 @@ class CSMeDBasic:
     SOURCE_VERSION = datasets.Version(_SOURCE_VERSION)
     BIGBIO_VERSION = datasets.Version(_BIGBIO_VERSION)
 
+    @staticmethod
     def load_dataset(
-        self, base_path
+        base_path,
     ) -> dict[str, dict[str, dict[str, Union[str, datasets.Dataset]]]]:
         """Returns a dictionary of datasets.
         The keys are the names of the reviews.
@@ -131,7 +132,6 @@ class CSMeDBasic:
 
 
 if __name__ == "__main__":
-    csm = CSMeDBasic()
-    csmed_dataset = csm.load_dataset(base_path=".")
+    csmed_dataset = CSMeDBasic.load_dataset(base_path="")
     x = csmed_dataset.keys()
     print(x)

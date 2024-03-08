@@ -18,9 +18,9 @@ from typing import List, Tuple, Dict
 import datasets
 import pandas as pd
 
-from csmed.datasets.loader.bigbiohub import BigBioConfig
-from csmed.datasets.loader.bigbiohub import Tasks
-from csmed.datasets.loader.bigbiohub import (
+from csmed.loader.bigbiohub import BigBioConfig
+from csmed.loader.bigbiohub import Tasks
+from csmed.loader.bigbiohub import (
     text_features,
     entailment_features,
     pairs_features,

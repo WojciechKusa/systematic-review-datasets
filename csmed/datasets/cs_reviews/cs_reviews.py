@@ -19,9 +19,9 @@ import bibtexparser
 import datasets
 import pandas as pd
 
-from csmed.datasets.loader.bigbiohub import BigBioConfig
-from csmed.datasets.loader.bigbiohub import Tasks
-from csmed.datasets.loader.bigbiohub import text_features
+from csmed.loader.bigbiohub import BigBioConfig
+from csmed.loader.bigbiohub import Tasks
+from csmed.loader.bigbiohub import text_features
 
 _LANGUAGES = ["English"]
 _PUBMED = True

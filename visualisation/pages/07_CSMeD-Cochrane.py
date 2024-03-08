@@ -2,8 +2,8 @@ from collections import Counter
 
 import streamlit as st
 
-from csmed.datasets.datasets.csmed_basic.csmed_basic import CSMeDBasic
-from csmed.datasets.datasets.csmed_cochrane.csmed_cochrane import CSMeDCochrane
+from csmed.csmed.csmed_basic.csmed_basic import CSMeDBasic
+from csmed.csmed.csmed_cochrane.csmed_cochrane import CSMeDCochrane
 
 
 def count_statistics(dataset):
@@ -42,15 +42,15 @@ def count_statistics(dataset):
 
 RELEVANT_LABEL = "1"
 
-csmed_dataset = CSMeDBasic().load_dataset(
-    base_path="csmed/datasets/datasets/csmed_basic/"
+csmed_dataset = CSMeDBasic.load_dataset(
+    base_path="csmed/datasets/csmed_basic/"
 )
 
 stats = count_statistics(csmed_dataset["TRAIN"])
 st.write(stats)
 
-csmed_cochrane = CSMeDCochrane().load_dataset(
-    base_path="csmed/datasets/datasets/csmed_cochrane/"
+csmed_cochrane = CSMeDCochrane.load_dataset(
+    base_path="csmed/datasets/csmed_cochrane/"
 )
 
 stats = count_statistics(csmed_cochrane["TRAIN"])
