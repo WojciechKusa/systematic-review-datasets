@@ -18,10 +18,10 @@ from typing import List, Tuple, Dict
 import datasets
 import pandas as pd
 
-from csmed.datasets.loader.bigbiohub import BigBioConfig
-from csmed.datasets.loader.bigbiohub import Tasks
-from csmed.datasets.loader.bigbiohub import text_features
-from csmed.datasets.utils import (
+from csmed.loader.bigbiohub import BigBioConfig
+from csmed.loader.bigbiohub import Tasks
+from csmed.loader.bigbiohub import text_features
+from csmed.utils import (
     get_from_pubmed,
     is_prepared,
     save_checksum,

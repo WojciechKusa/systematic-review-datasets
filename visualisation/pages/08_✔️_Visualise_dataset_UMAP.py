@@ -49,7 +49,7 @@ if __name__ == "__main__":
         data_idx = data_config_names.index(data_config_name)
         data_config = data_configs[data_idx]
         dataset = load_dataset(
-            f"csmed/datasets/datasets/{data_name}/{data_name}.py",
+            f"csmed/datasets/{data_name}/{data_name}.py",
             name=data_config_name,
         )
 

@@ -128,7 +128,7 @@ class BigBioConfigHelpers:
             [
                 path
                 for path in self.path_to_biodatasets.glob("*")
-                if path.name != "__init__.py" and path.name != "__pycache__"
+                if path.name != "__init__.py" and path.name != "__pycache__" and path.is_dir()
             ]
         )
         self.dataloader_scripts = [
@@ -149,7 +149,7 @@ class BigBioConfigHelpers:
         for dataloader_script in self.dataloader_scripts:
             dataset_name = dataloader_script.stem
             py_module = import_module(
-                f"csmed.datasets.datasets.{dataset_name}.{dataset_name}"
+                f"csmed.datasets.{dataset_name}.{dataset_name}"
             )  # fixme hardcoded path
             ds_module = datasets.load.dataset_module_factory(
                 dataloader_script.as_posix()
